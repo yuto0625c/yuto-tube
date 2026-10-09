@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>yuto-tube v14.26.8.1.01</title>
+    <style>
+        /* 神秘的な黒と赤のテーマ */
+        :root {
+            --bg-color: #080000;
+            --header-bg: #150505;
+            --accent-color: #e50914;
+            --text-color: #f5f5f5;
+            --card-bg: #1c0a0a;
+            --hover-bg: #2a0e0e;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: var(--header-bg);
+            border-bottom: 1px solid #3d0000;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .menu-btn {
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+        .logo {
+            font-weight: bold;
+            font-size: 18px;
+            text-decoration: none;
+            background: linear-gradient(to right, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: rainbow 5s linear infinite;
+        }
+        @keyframes rainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+        .search-container {
+            display: flex;
+            flex-grow: 1;
+            max-width: 500px;
+            margin: 0 20px;
+        }
+        .search-box {
+            width: 100%;
+            padding: 8px 15px;
+            background-color: #100000;
+            border: 1px solid #4a0000;
+            color: white;
+            border-radius: 20px 0 0 20px;
+            outline: none;
+        }
+        .search-btn {
+            padding: 8px 18px;
+            background-color: #2b0000;
+            border: 1px solid #4a0000;
+            color: white;
+            border-radius: 0 20px 20px 0;
+            cursor: pointer;
+        }
+        .time-display {
+            font-size: 14px;
+            color: #d1d1d1;
+            font-family: monospace;
+        }
+        .main-container {
+            padding: 20px;
+        }
+        .status-card {
+            background-color: var(--card-bg);
+            border: 1px solid #4a0000;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 600px;
+            margin: 40px auto;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(229, 9, 20, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <div class="menu-btn">≡</div>
+        <a href="#" class="logo">yuto-tube v14.26.8.1.01</a>
+    </div>
+    <div class="search-container">
+        <input type="text" class="search-box" placeholder="検索 (キー入力で移動)" id="searchInput">
+        <button class="search-btn">検索</button>
+    </div>
+    <div class="time-display" id="clock">--:-- --</div>
+</header>
+
+<div class="main-container">
+    <div class="status-card">
+        <h2>yuto-tube 準備完了</h2>
+        <p>Renderバックエンドとの接続を確認中...</p>
+        <p id="backendStatus" style="color: #ff5555;">ステータス取得中...</p>
+    </div>
+</div>
+
+<script>
+    // デジタル時計 (AM/PM)
+    function updateClock() {
+        const now = new Date();
+        let hours = now.getHours();
+        let minutes = now.getMinutes();
+        const ampm = hours >= 12 ? 'P.M' : 'A.M';
+        hours = hours % 12;
+        hours = hours ? hours : 12; 
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        document.getElementById('clock').textContent = hours + ':' + minutes + ' ' + ampm;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // バックエンド通信確認
+    fetch('/api/status')
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('backendStatus').textContent = '接続成功: ' + data.message;
+            document.getElementById('backendStatus').style.color = '#00ff88';
+        })
+        .catch(err => {
+            document.getElementById('backendStatus').textContent = '接続エラー';
+        });
+</script>
+
+</body>
+</html>
