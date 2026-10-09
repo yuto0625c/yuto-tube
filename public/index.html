@@ -13,6 +13,7 @@
             --text-color: #f5f5f5;
             --card-bg: #1c0a0a;
             --border-color: #4a0000;
+            --sidebar-width: 240px;
         }
         body {
             background-color: var(--bg-color);
@@ -20,10 +21,11 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            overflow-x: hidden;
             transition: all 0.3s ease;
         }
 
-        /* ログイン画面スタイル */
+        /* 1. 認証画面（ログイン/新規作成） */
         .auth-container {
             display: flex;
             justify-content: center;
@@ -61,7 +63,6 @@
             font-size: 13px;
             color: #ccc;
         }
-        /* 入力欄にヒントを表示させない完全隠蔽スタイル */
         .input-group input[type="text"],
         .input-group input[type="password"],
         .input-group input[type="email"] {
@@ -108,9 +109,9 @@
             cursor: pointer;
         }
 
-        /* メインアプリ構造 */
+        /* 2. メインアプリ構造 */
         #app-wrapper {
-            display: none; /* ログイン完了後に表示 */
+            display: none;
         }
         header {
             display: flex;
@@ -121,7 +122,7 @@
             border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
         }
         .header-left {
             display: flex;
@@ -131,6 +132,7 @@
         .menu-btn {
             font-size: 24px;
             cursor: pointer;
+            user-select: none;
         }
         .logo {
             font-weight: bold;
@@ -140,12 +142,14 @@
             -webkit-background-clip: text;
             color: transparent;
             animation: rainbow 5s linear infinite;
+            cursor: pointer;
         }
         .search-container {
             display: flex;
             flex-grow: 1;
             max-width: 500px;
             margin: 0 20px;
+            position: relative;
         }
         .search-box {
             width: 100%;
@@ -163,6 +167,19 @@
             color: white;
             border-radius: 0 20px 20px 0;
             cursor: pointer;
+        }
+        .search-hint {
+            position: absolute;
+            top: 42px;
+            left: 10px;
+            background-color: rgba(30, 0, 0, 0.95);
+            border: 1px solid var(--accent-color);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #ccc;
+            display: none;
+            z-index: 1001;
         }
         .time-display {
             font-size: 14px;
@@ -183,6 +200,48 @@
             border-radius: 3px;
             cursor: pointer;
         }
+
+        /* サイドバー メニュー */
+        .sidebar {
+            position: fixed;
+            top: 55px;
+            left: -250px;
+            width: var(--sidebar-width);
+            height: calc(100vh - 55px);
+            background-color: var(--header-bg);
+            border-right: 1px solid var(--border-color);
+            transition: left 0.3s ease;
+            overflow-y: auto;
+            z-index: 999;
+        }
+        .sidebar.active {
+            left: 0;
+        }
+        .sidebar-menu {
+            list-style: none;
+            padding: 10px 0;
+            margin: 0;
+        }
+        .sidebar-menu li {
+            padding: 12px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            border-bottom: 1px solid #1a0000;
+            transition: background 0.2s;
+        }
+        .sidebar-menu li:hover {
+            background-color: var(--card-bg);
+            color: var(--accent-color);
+        }
+
+        /* メインコンテンツエリア */
+        .main-content {
+            padding: 20px;
+            transition: margin-left 0.3s ease;
+        }
+        .main-content.shifted {
+            margin-left: var(--sidebar-width);
+        }
         .error-msg {
             color: #ff4444;
             font-size: 12px;
@@ -193,7 +252,7 @@
 </head>
 <body>
 
-<!-- 1. 認証画面（ログイン / 新規作成） -->
+<!-- 1. 認証画面 -->
 <div class="auth-container" id="authSection">
     <!-- ログインフォーム -->
     <div class="auth-box" id="loginForm">
@@ -277,16 +336,18 @@
     </div>
 </div>
 
-<!-- 2. メインアプリ（ログイン後に表示） -->
+<!-- 2. メインアプリ構造 -->
 <div id="app-wrapper">
     <header>
         <div class="header-left">
-            <div class="menu-btn">≡</div>
-            <a href="#" class="logo" id="logoBtn">yuto-tube v14.26.8.1.01</a>
+            <div class="menu-btn" onclick="toggleSidebar()">≡</div>
+            <!-- ロゴクリックでホーム転送 -->
+            <a onclick="navigateView('home')" class="logo">yuto-tube v14.26.8.1.01</a>
         </div>
         <div class="search-container">
-            <input type="text" class="search-box" placeholder="検索" id="searchInput">
-            <button class="search-btn">検索</button>
+            <input type="text" class="search-box" placeholder="検索" id="searchInput" onkeypress="handleSearchKey(event)">
+            <button class="search-btn" onclick="executeSearch()">検索</button>
+            <div class="search-hint" id="searchHint">/ を押すと検索ボックスに移動できます</div>
         </div>
         <div class="user-info">
             <span id="displayUsername"></span>
@@ -296,30 +357,66 @@
         </div>
     </header>
 
-    <div style="padding: 20px;">
-        <h2>ホーム</h2>
-        <p>ログイン成功！コンテンツを準備中...</p>
-    </div>
+    <!-- サイドバー (全14項目) -->
+    <nav class="sidebar" id="sidebar">
+        <ul class="sidebar-menu">
+            <li onclick="navigateView('home')">ホーム</li>
+            <li onclick="navigateView('shorts')">ショート動画</li>
+            <li onclick="navigateView('subscriptions')">登録チャンネル</li>
+            <li onclick="navigateView('games')">ゲーム</li>
+            <li onclick="navigateView('sports')">スポーツ</li>
+            <li onclick="navigateView('news')">ニュース</li>
+            <li onclick="navigateView('entertainment')">エンタメ</li>
+            <li onclick="navigateView('music')">音楽</li>
+            <li onclick="navigateView('learning')">学習</li>
+            <li onclick="navigateView('live')">ライブ</li>
+            <li onclick="navigateView('playlists')">再生リスト</li>
+            <li onclick="navigateView('settings')">設定</li>
+            <li onclick="navigateView('admin')">管理者権限</li>
+            <li onclick="navigateView('tools')">その他のツール</li>
+            <!-- フィードバック送信 (外部転送) -->
+            <li onclick="openFeedback()">フィードバックを送信</li>
+        </ul>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content" id="mainContent">
+        <div id="viewContainer">
+            <h2>ホーム</h2>
+            <p>検索履歴やおすすめの動画一覧がここに表示されます。</p>
+        </div>
+    </main>
 </div>
 
 <script>
-    // ダミーユーザーリスト (ローカルテスト用・重複確認)
     const existingUsers = ["admin", "yuto", "testuser"];
 
-    // ページロード時の初期化（ローカルストレージ確認）
     window.onload = function() {
         updateClock();
         setInterval(updateClock, 1000);
 
-        // ローカルストレージからログイン情報を復元
         const savedUser = localStorage.getItem('yuto_tube_user');
         if (savedUser) {
             const userData = JSON.parse(savedUser);
             showMainApp(userData);
         }
+
+        // キーボード入力による検索案内ガイド
+        document.addEventListener('keydown', function(e) {
+            if (document.getElementById('app-wrapper').style.display === 'block') {
+                const activeTag = document.activeElement.tagName.toLowerCase();
+                if (activeTag !== 'input' && activeTag !== 'textarea') {
+                    if (e.key === '/') {
+                        e.preventDefault();
+                        const searchBox = document.getElementById('searchInput');
+                        searchBox.focus();
+                        showSearchHint();
+                    }
+                }
+            }
+        });
     };
 
-    // 時計更新
     function updateClock() {
         const now = new Date();
         let hours = now.getHours();
@@ -331,7 +428,64 @@
         document.getElementById('clock').textContent = hours + ':' + minutes + ' ' + ampm;
     }
 
-    // 画面切り替え (ログイン <-> 新規作成)
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        sidebar.classList.toggle('active');
+        mainContent.classList.toggle('shifted');
+    }
+
+    // 画面ビュー切り替え
+    function navigateView(viewName) {
+        const container = document.getElementById('viewContainer');
+        
+        // 追加①: その他のツールや設定、管理者は押すと最初から出てくるのをやめる
+        if (['settings', 'admin', 'tools'].includes(viewName)) {
+            container.innerHTML = `<h2>${getViewTitle(viewName)}</h2><p>メニューから利用する機能を選択してください。</p>`;
+        } else {
+            container.innerHTML = `<h2>${getViewTitle(viewName)}</h2><p>${getViewTitle(viewName)} ページを開きました。</p>`;
+        }
+
+        // サイドバーを自動で閉じる
+        document.getElementById('sidebar').classList.remove('active');
+        document.getElementById('mainContent').classList.remove('shifted');
+    }
+
+    function getViewTitle(name) {
+        const titles = {
+            home: 'ホーム', shorts: 'ショート動画', subscriptions: '登録チャンネル',
+            games: 'ゲーム', sports: 'スポーツ', news: 'ニュース',
+            entertainment: 'エンタメ', music: '音楽', learning: '学習',
+            live: 'ライブ', playlists: '再生リスト', settings: '設定',
+            admin: '管理者権限', tools: 'その他のツール'
+        };
+        return titles[name] || 'ホーム';
+    }
+
+    // フィードバック送信 (Microsoft Formsへ転送)
+    function openFeedback() {
+        window.open('https://forms.cloud.microsoft/r/HcmtDqFJ7W', '_blank');
+    }
+
+    function showSearchHint() {
+        const hint = document.getElementById('searchHint');
+        hint.style.display = 'block';
+        setTimeout(() => { hint.style.display = 'none'; }, 3000);
+    }
+
+    function handleSearchKey(e) {
+        if (e.key === 'Enter') {
+            executeSearch();
+        }
+    }
+
+    function executeSearch() {
+        const query = document.getElementById('searchInput').value;
+        if (query) {
+            document.getElementById('viewContainer').innerHTML = `<h2>検索結果: ${query}</h2><p>動画コンテンツを取得中...</p>`;
+        }
+    }
+
     function switchAuthView(view) {
         if (view === 'register') {
             document.getElementById('loginForm').style.display = 'none';
@@ -342,36 +496,21 @@
         }
     }
 
-    // ログイン時の多段階入力欄切り替え
     function toggleAuthFields() {
-        const isAdmin = document.getElementById('chkAdmin').checked;
-        const isDev = document.getElementById('chkDev').checked;
-
-        document.getElementById('adminPassGroup').style.display = isAdmin ? 'block' : 'none';
-        document.getElementById('devPassGroup').style.display = isDev ? 'block' : 'none';
+        document.getElementById('adminPassGroup').style.display = document.getElementById('chkAdmin').checked ? 'block' : 'none';
+        document.getElementById('devPassGroup').style.display = document.getElementById('chkDev').checked ? 'block' : 'none';
     }
 
-    // 新規登録時の多段階入力欄切り替え
     function toggleRegAuthFields() {
-        const isAdmin = document.getElementById('regChkAdmin').checked;
-        const isDev = document.getElementById('regChkDev').checked;
-
-        document.getElementById('regAdminPassGroup').style.display = isAdmin ? 'block' : 'none';
-        document.getElementById('regDevPassGroup').style.display = isDev ? 'block' : 'none';
+        document.getElementById('regAdminPassGroup').style.display = document.getElementById('regChkAdmin').checked ? 'block' : 'none';
+        document.getElementById('regDevPassGroup').style.display = document.getElementById('regChkDev').checked ? 'block' : 'none';
     }
 
-    // アカウント名重複チェック
     function checkUserExists() {
         const username = document.getElementById('regUser').value.trim();
-        const errorElem = document.getElementById('userExistsError');
-        if (existingUsers.includes(username.toLowerCase())) {
-            errorElem.style.display = 'block';
-        } else {
-            errorElem.style.display = 'none';
-        }
+        document.getElementById('userExistsError').style.display = existingUsers.includes(username.toLowerCase()) ? 'block' : 'none';
     }
 
-    // ログイン実行
     function handleLogin() {
         const username = document.getElementById('loginUser').value.trim();
         const pin = document.getElementById('loginPin').value;
@@ -385,21 +524,14 @@
         }
 
         let role = "一般利用者";
-        if (isDev) {
-            role = "開発者";
-        } else if (isAdmin) {
-            role = "管理者";
-        }
+        if (isDev) role = "開発者";
+        else if (isAdmin) role = "管理者";
 
         const userData = { username, role };
-
-        // ローカルストレージに保存（再読み込み対策）
         localStorage.setItem('yuto_tube_user', JSON.stringify(userData));
-
         showMainApp(userData);
     }
 
-    // 新規登録実行
     function handleRegister() {
         const username = document.getElementById('regUser').value.trim();
         const pin = document.getElementById('regPin').value;
@@ -414,4 +546,30 @@
             return;
         }
 
-        existingUsers.
+        existingUsers.push(username.toLowerCase());
+        alert("アカウントを作成しました！ログインしてください");
+        switchAuthView('login');
+    }
+
+    function showMainApp(userData) {
+        document.getElementById('authSection').style.display = 'none';
+        document.getElementById('app-wrapper').style.display = 'block';
+
+        document.getElementById('displayUsername').textContent = userData.username;
+        document.getElementById('displayRole').textContent = `[${userData.role}]`;
+    }
+
+    function handleLogout() {
+        localStorage.removeItem('yuto_tube_user');
+        location.reload();
+    }
+
+    function showLoginError(msg) {
+        const err = document.getElementById('loginError');
+        err.textContent = msg;
+        err.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
