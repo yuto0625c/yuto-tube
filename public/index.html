@@ -24,7 +24,7 @@
             transition: all 0.3s ease;
         }
 
-        /* 認証画面 */
+        /* ログイン認証 */
         .auth-container {
             display: flex;
             justify-content: center;
@@ -53,323 +53,92 @@
             0% { filter: hue-rotate(0deg); }
             100% { filter: hue-rotate(360deg); }
         }
-        .input-group {
-            margin-bottom: 15px;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 13px;
-            color: #ccc;
-        }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; margin-bottom: 5px; font-size: 13px; color: #ccc; }
         .input-group input[type="text"],
         .input-group input[type="password"],
         .input-group input[type="email"] {
-            width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-            background-color: #100000;
-            border: 1px solid var(--border-color);
-            color: white;
-            border-radius: 5px;
-            outline: none;
+            width: 100%; padding: 10px; box-sizing: border-box; background-color: #100000; border: 1px solid var(--border-color); color: white; border-radius: 5px; outline: none;
         }
-        .checkbox-group {
-            margin: 10px 0;
-            font-size: 13px;
-        }
-        .checkbox-group label {
-            cursor: pointer;
-        }
-        .auth-btn {
-            width: 100%;
-            padding: 10px;
-            background-color: var(--accent-color);
-            border: none;
-            color: white;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .auth-btn:hover {
-            background-color: #ff1e27;
-        }
-        .auth-links {
-            margin-top: 15px;
-            text-align: center;
-            font-size: 12px;
-        }
-        .auth-links a {
-            color: #ff6666;
-            text-decoration: none;
-            display: block;
-            margin-top: 5px;
-            cursor: pointer;
-        }
+        .checkbox-group { margin: 10px 0; font-size: 13px; }
+        .checkbox-group label { cursor: pointer; }
+        .auth-btn { width: 100%; padding: 10px; background-color: var(--accent-color); border: none; color: white; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        .auth-btn:hover { background-color: #ff1e27; }
+        .auth-links { margin-top: 15px; text-align: center; font-size: 12px; }
+        .auth-links a { color: #ff6666; text-decoration: none; display: block; margin-top: 5px; cursor: pointer; }
 
-        /* アプリレイアウト */
-        #app-wrapper {
-            display: none;
-        }
+        /* ヘッダー & レイアウト */
+        #app-wrapper { display: none; }
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: var(--header-bg);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background-color: var(--header-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 1000;
         }
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .menu-btn {
-            font-size: 24px;
-            cursor: pointer;
-            user-select: none;
-        }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .menu-btn { font-size: 24px; cursor: pointer; user-select: none; }
         .logo {
-            font-weight: bold;
-            font-size: 18px;
-            text-decoration: none;
-            background: linear-gradient(to right, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
-            -webkit-background-clip: text;
-            color: transparent;
-            animation: rainbow 5s linear infinite;
-            cursor: pointer;
+            font-weight: bold; font-size: 18px; text-decoration: none; background: linear-gradient(to right, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3); -webkit-background-clip: text; color: transparent; animation: rainbow 5s linear infinite; cursor: pointer;
         }
-        .search-container {
-            display: flex;
-            flex-grow: 1;
-            max-width: 500px;
-            margin: 0 20px;
-            position: relative;
-        }
-        .search-box {
-            width: 100%;
-            padding: 8px 15px;
-            background-color: #100000;
-            border: 1px solid var(--border-color);
-            color: white;
-            border-radius: 20px 0 0 20px;
-            outline: none;
-        }
-        .search-btn {
-            padding: 8px 18px;
-            background-color: #2b0000;
-            border: 1px solid var(--border-color);
-            color: white;
-            border-radius: 0 20px 20px 0;
-            cursor: pointer;
-        }
-        .search-hint {
-            position: absolute;
-            top: 42px;
-            left: 10px;
-            background-color: rgba(30, 0, 0, 0.95);
-            border: 1px solid var(--accent-color);
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 11px;
-            color: #ccc;
-            display: none;
-            z-index: 1001;
-        }
-        .time-display {
-            font-size: 14px;
-            color: #d1d1d1;
-            font-family: monospace;
-        }
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 13px;
-        }
-        .logout-btn {
-            background-color: #333;
-            color: white;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 3px;
-            cursor: pointer;
-        }
+        .search-container { display: flex; flex-grow: 1; max-width: 500px; margin: 0 20px; position: relative; }
+        .search-box { width: 100%; padding: 8px 15px; background-color: #100000; border: 1px solid var(--border-color); color: white; border-radius: 20px 0 0 20px; outline: none; }
+        .search-btn { padding: 8px 18px; background-color: #2b0000; border: 1px solid var(--border-color); color: white; border-radius: 0 20px 20px 0; cursor: pointer; }
+        .search-hint { position: absolute; top: 42px; left: 10px; background-color: rgba(30, 0, 0, 0.95); border: 1px solid var(--accent-color); padding: 6px 12px; border-radius: 4px; font-size: 11px; color: #ccc; display: none; z-index: 1001; }
+        .time-display { font-size: 14px; color: #d1d1d1; font-family: monospace; }
+        .user-info { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+        .logout-btn { background-color: #333; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; }
 
         /* サイドバー */
-        .sidebar {
-            position: fixed;
-            top: 55px;
-            left: -250px;
-            width: var(--sidebar-width);
-            height: calc(100vh - 55px);
-            background-color: var(--header-bg);
-            border-right: 1px solid var(--border-color);
-            transition: left 0.3s ease;
-            overflow-y: auto;
-            z-index: 999;
-        }
-        .sidebar.active {
-            left: 0;
-        }
-        .sidebar-menu {
-            list-style: none;
-            padding: 10px 0;
-            margin: 0;
-        }
-        .sidebar-menu li {
-            padding: 12px 20px;
-            font-size: 14px;
-            cursor: pointer;
-            border-bottom: 1px solid #1a0000;
-            transition: background 0.2s;
-        }
-        .sidebar-menu li:hover {
-            background-color: var(--card-bg);
-            color: var(--accent-color);
-        }
+        .sidebar { position: fixed; top: 55px; left: -250px; width: var(--sidebar-width); height: calc(100vh - 55px); background-color: var(--header-bg); border-right: 1px solid var(--border-color); transition: left 0.3s ease; overflow-y: auto; z-index: 999; }
+        .sidebar.active { left: 0; }
+        .sidebar-menu { list-style: none; padding: 10px 0; margin: 0; }
+        .sidebar-menu li { padding: 12px 20px; font-size: 14px; cursor: pointer; border-bottom: 1px solid #1a0000; transition: background 0.2s; }
+        .sidebar-menu li:hover { background-color: var(--card-bg); color: var(--accent-color); }
 
-        /* メインコンテンツ */
-        .main-content {
-            padding: 20px;
-            transition: margin-left 0.3s ease;
-        }
-        .main-content.shifted {
-            margin-left: var(--sidebar-width);
-        }
+        .main-content { padding: 20px; transition: margin-left 0.3s ease; }
+        .main-content.shifted { margin-left: var(--sidebar-width); }
 
-        /* カード・パネル・ツールスタイル */
-        .settings-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-        .settings-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #2a0000;
-        }
-        .btn-option {
-            background-color: #2b0000;
-            border: 1px solid var(--border-color);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        .btn-option:hover {
-            background-color: var(--accent-color);
-        }
-        .btn-danger {
-            background-color: #880000;
-            border: 1px solid #aa0000;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        .btn-danger:hover {
-            background-color: #cc0000;
-        }
-        .select-option {
-            background-color: #100000;
-            border: 1px solid var(--border-color);
-            color: white;
-            padding: 6px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-        }
+        /* 動画グリッド & プレイヤー */
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-top: 15px; }
+        .video-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
+        .video-card:hover { transform: translateY(-3px); border-color: var(--accent-color); }
+        .video-card img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+        .video-card-body { padding: 10px; }
+        .video-card-title { font-weight: bold; font-size: 14px; margin-bottom: 5px; color: #fff; line-height: 1.3; }
+        .video-card-author { font-size: 12px; color: #aaa; }
 
-        /* エディタ & メモ領域 */
-        .editor-textarea {
-            width: 100%;
-            height: 200px;
-            background-color: #050000;
-            border: 1px solid var(--border-color);
-            color: #00ff88;
-            font-family: monospace;
-            padding: 10px;
-            box-sizing: border-box;
-            border-radius: 5px;
-            outline: none;
-        }
-        .drop-zone {
-            border: 2px dashed var(--border-color);
-            padding: 20px;
-            text-align: center;
-            color: #888;
-            margin-bottom: 10px;
-            border-radius: 5px;
-        }
-
-        /* ロード状況バー */
-        .loading-bar-container {
-            width: 100%;
-            background-color: #222;
-            height: 10px;
-            border-radius: 5px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-        .loading-bar {
-            width: 0%;
-            height: 100%;
-            background-color: var(--accent-color);
-            transition: width 0.3s;
-        }
-
-        .error-msg {
-            color: #ff4444;
-            font-size: 12px;
-            margin-top: 5px;
-            display: none;
-        }
+        /* 動画再生画面 */
+        .watch-container { display: flex; gap: 20px; flex-wrap: wrap; }
+        .video-primary { flex: 1 1 65%; min-width: 320px; }
+        .video-secondary { flex: 1 1 30%; min-width: 280px; }
+        .player-box { width: 100%; aspect-ratio: 16 / 9; background-color: #000; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
+        .player-box iframe { width: 100%; height: 100%; border: none; }
+        .video-controls-panel { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-top: 15px; }
+        .control-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; align-items: center; }
+        .btn-option { background-color: #2b0000; border: 1px solid var(--border-color); color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .btn-option:hover { background-color: var(--accent-color); }
+        .btn-danger { background-color: #880000; border: 1px solid #aa0000; color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .select-option { background-color: #100000; border: 1px solid var(--border-color); color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; }
+        .settings-card { background-color: var(--card-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #2a0000; }
+        .editor-textarea { width: 100%; height: 180px; background-color: #050000; border: 1px solid var(--border-color); color: #00ff88; font-family: monospace; padding: 10px; box-sizing: border-box; border-radius: 5px; outline: none; }
+        .loading-bar-container { width: 100%; background-color: #222; height: 10px; border-radius: 5px; overflow: hidden; margin-top: 10px; }
+        .loading-bar { width: 0%; height: 100%; background-color: var(--accent-color); transition: width 0.3s; }
+        .error-msg { color: #ff4444; font-size: 12px; margin-top: 5px; display: none; }
     </style>
 </head>
 <body>
 
-<!-- 1. 認証画面 -->
+<!-- 認証画面 -->
 <div class="auth-container" id="authSection">
     <div class="auth-box" id="loginForm">
         <div class="auth-title">yuto-tube</div>
-        <div class="input-group">
-            <label>アカウント名</label>
-            <input type="text" id="loginUser" autocomplete="off">
-        </div>
-        <div class="input-group">
-            <label>PIN</label>
-            <input type="password" id="loginPin" autocomplete="off">
-        </div>
-        <div class="input-group">
-            <label>パスワード</label>
-            <input type="password" id="loginPass" autocomplete="off">
-        </div>
+        <div class="input-group"><label>アカウント名</label><input type="text" id="loginUser" autocomplete="off"></div>
+        <div class="input-group"><label>PIN</label><input type="password" id="loginPin" autocomplete="off"></div>
+        <div class="input-group"><label>パスワード</label><input type="password" id="loginPass" autocomplete="off"></div>
 
-        <div class="checkbox-group">
-            <label><input type="checkbox" id="chkAdmin" onchange="toggleAuthFields()"> あなたは管理者ですか?</label>
-        </div>
-        <div class="input-group" id="adminPassGroup" style="display: none;">
-            <label>管理者パスワード</label>
-            <input type="password" id="adminPass" autocomplete="off">
-        </div>
+        <div class="checkbox-group"><label><input type="checkbox" id="chkAdmin" onchange="toggleAuthFields()"> あなたは管理者ですか?</label></div>
+        <div class="input-group" id="adminPassGroup" style="display: none;"><label>管理者パスワード</label><input type="password" id="adminPass" autocomplete="off"></div>
 
-        <div class="checkbox-group">
-            <label><input type="checkbox" id="chkDev" onchange="toggleAuthFields()"> あなたは開発者ですか?</label>
-        </div>
-        <div class="input-group" id="devPassGroup" style="display: none;">
-            <label>開発者パスワード</label>
-            <input type="password" id="devPass" autocomplete="off">
-        </div>
+        <div class="checkbox-group"><label><input type="checkbox" id="chkDev" onchange="toggleAuthFields()"> あなたは開発者ですか?</label></div>
+        <div class="input-group" id="devPassGroup" style="display: none;"><label>開発者パスワード</label><input type="password" id="devPass" autocomplete="off"></div>
 
         <button class="auth-btn" onclick="handleLogin()">ログイン</button>
         <div class="error-msg" id="loginError"></div>
@@ -382,45 +151,22 @@
 
     <div class="auth-box" id="registerForm" style="display: none;">
         <div class="auth-title">新規作成</div>
-        <div class="input-group">
-            <label>アカウント名</label>
-            <input type="text" id="regUser" autocomplete="off" onblur="checkUserExists()">
-            <div class="error-msg" id="userExistsError">他の人が使っているので、、、使用できません</div>
-        </div>
-        <div class="input-group">
-            <label>メールアドレス (空欄可)</label>
-            <input type="email" id="regEmail" autocomplete="off">
-        </div>
-        <div class="input-group">
-            <label>PIN</label>
-            <input type="password" id="regPin" autocomplete="off">
-        </div>
+        <div class="input-group"><label>アカウント名</label><input type="text" id="regUser" autocomplete="off" onblur="checkUserExists()"><div class="error-msg" id="userExistsError">他の人が使っているので、、、使用できません</div></div>
+        <div class="input-group"><label>メールアドレス (空欄可)</label><input type="email" id="regEmail" autocomplete="off"></div>
+        <div class="input-group"><label>PIN</label><input type="password" id="regPin" autocomplete="off"></div>
 
-        <div class="checkbox-group">
-            <label><input type="checkbox" id="regChkAdmin" onchange="toggleRegAuthFields()"> あなたは管理者ですか?</label>
-        </div>
-        <div class="input-group" id="regAdminPassGroup" style="display: none;">
-            <label>管理者パスワード設定</label>
-            <input type="password" id="regAdminPass" autocomplete="off">
-        </div>
+        <div class="checkbox-group"><label><input type="checkbox" id="regChkAdmin" onchange="toggleRegAuthFields()"> あなたは管理者ですか?</label></div>
+        <div class="input-group" id="regAdminPassGroup" style="display: none;"><label>管理者パスワード設定</label><input type="password" id="regAdminPass" autocomplete="off"></div>
 
-        <div class="checkbox-group">
-            <label><input type="checkbox" id="regChkDev" onchange="toggleRegAuthFields()"> あなたは開発者ですか?</label>
-        </div>
-        <div class="input-group" id="regDevPassGroup" style="display: none;">
-            <label>開発者パスワード設定</label>
-            <input type="password" id="regDevPass" autocomplete="off">
-        </div>
+        <div class="checkbox-group"><label><input type="checkbox" id="regChkDev" onchange="toggleRegAuthFields()"> あなたは開発者ですか?</label></div>
+        <div class="input-group" id="regDevPassGroup" style="display: none;"><label>開発者パスワード設定</label><input type="password" id="regDevPass" autocomplete="off"></div>
 
         <button class="auth-btn" onclick="handleRegister()">アカウント作成</button>
-
-        <div class="auth-links">
-            <a onclick="switchAuthView('login')">既にアカウントをお持ちの方はコチラ</a>
-        </div>
+        <div class="auth-links"><a onclick="switchAuthView('login')">既にアカウントをお持ちの方はコチラ</a></div>
     </div>
 </div>
 
-<!-- 2. メインアプリ構造 -->
+<!-- メイン構造 -->
 <div id="app-wrapper">
     <header>
         <div class="header-left">
@@ -461,19 +207,16 @@
     </nav>
 
     <main class="main-content" id="mainContent">
-        <div id="viewContainer">
-            <h2>ホーム</h2>
-            <p>検索履歴やおすすめの動画一覧がここに表示されます。</p>
-        </div>
+        <div id="viewContainer"></div>
     </main>
 </div>
 
 <script>
     let currentUserData = null;
+    let currentVideoId = "dQw4w9WgXcQ";
     const existingUsers = [
         { name: "yuto", role: "開発者", created: "2026-10-01 00:00" },
-        { name: "admin", role: "管理者", created: "2026-10-02 12:30" },
-        { name: "testuser", role: "一般利用者", created: "2026-10-05 18:45" }
+        { name: "admin", role: "管理者", created: "2026-10-02 12:30" }
     ];
 
     window.onload = function() {
@@ -513,170 +256,150 @@
     }
 
     function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('mainContent');
-        sidebar.classList.toggle('active');
-        mainContent.classList.toggle('shifted');
+        document.getElementById('sidebar').classList.toggle('active');
+        document.getElementById('mainContent').classList.toggle('shifted');
     }
 
     function navigateView(viewName) {
-        const container = document.getElementById('viewContainer');
-
-        if (viewName === 'settings') {
-            container.innerHTML = renderSettingsPage();
-        } else if (viewName === 'admin') {
-            container.innerHTML = renderAdminPage();
-        } else if (viewName === 'tools') {
-            container.innerHTML = renderToolsPage();
-        } else if (viewName === 'games') {
-            loadGameSection();
-        } else {
-            container.innerHTML = `<h2>${getViewTitle(viewName)}</h2><p>${getViewTitle(viewName)} ページを開きました。</p>`;
-        }
+        if (viewName === 'home') loadHomeVideos('Roblox');
+        else if (viewName === 'settings') document.getElementById('viewContainer').innerHTML = renderSettingsPage();
+        else if (viewName === 'admin') document.getElementById('viewContainer').innerHTML = renderAdminPage();
+        else if (viewName === 'tools') document.getElementById('viewContainer').innerHTML = renderToolsPage();
+        else if (viewName === 'games') loadGameSection();
+        else document.getElementById('viewContainer').innerHTML = `<h2>${getViewTitle(viewName)}</h2><p>現在準備中です。</p>`;
 
         document.getElementById('sidebar').classList.remove('active');
         document.getElementById('mainContent').classList.remove('shifted');
     }
 
-    // ゲームセクション (要件: 読み込み中 & ロードバー)
-    function loadGameSection() {
+    // ホーム動画一覧取得・描画
+    function loadHomeVideos(query) {
+        const container = document.getElementById('viewContainer');
+        container.innerHTML = `<h2>ホーム (${query})</h2><p>動画を取得中...</p>`;
+
+        fetch(`/api/search?q=${encodeURIComponent(query)}`)
+            .then(res => res.json())
+            .then(data => {
+                let html = `<h2>ホーム (${query})</h2><div class="video-grid">`;
+                data.videos.forEach(v => {
+                    html += `
+                        <div class="video-card" onclick="playVideo('${v.id}', '${v.title.replace(/'/g, "\\'")}')">
+                            <img src="${v.thumbnail}" alt="thumb">
+                            <div class="video-card-body">
+                                <div class="video-card-title">${v.title}</div>
+                                <div class="video-card-author">${v.author} • ${v.views}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+                container.innerHTML = html;
+            })
+            .catch(() => {
+                container.innerHTML = `<p>動画取得エラーが発生しました</p>`;
+            });
+    }
+
+    // 動画再生画面表示
+    function playVideo(id, title) {
+        currentVideoId = id;
         const container = document.getElementById('viewContainer');
         container.innerHTML = `
-            <h2>ゲーム</h2>
-            <div class="settings-card" style="text-align: center; padding: 40px;">
-                <h3>読み込み中...</h3>
-                <div class="loading-bar-container">
-                    <div class="loading-bar" id="gameLoadBar"></div>
+            <div class="watch-container">
+                <div class="video-primary">
+                    <div class="player-box">
+                        <iframe id="videoIframe" src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-controls-panel">
+                        <div class="control-row">
+                            <label>動画取得方法:</label>
+                            <select class="select-option" id="fetchMethodSelect" onchange="changeFetchMethod()">
+                                <option value="nocookie">nocookie再生</option>
+                                <option value="stream">ストリーム再生</option>
+                                <option value="education">education再生</option>
+                                <option value="piped">Piped</option>
+                                <option value="invidious">Invidious</option>
+                            </select>
+                            <label>画質:</label>
+                            <select class="select-option">
+                                <option>1072p</option><option>804p</option><option>360p</option><option>音声のみ</option>
+                            </select>
+                        </div>
+                        <div class="control-row">
+                            <button class="btn-option" onclick="alert('ループ切り替え')">ループ再生</button>
+                            <button class="btn-option" onclick="alert('yt-dlpダウンロード処理を開始します')">保存 (yt-dlp)</button>
+                            <button class="btn-option" onclick="alert('字幕切替')">字幕 (C)</button>
+                        </div>
+                    </div>
+                    <div class="settings-card" style="margin-top: 15px;">
+                        <h3>${title}</h3>
+                        <p style="color: #aaa; font-size: 13px;">yuto-tube プレイヤーでストリーム再生中</p>
+                    </div>
+                </div>
+                <div class="video-secondary">
+                    <h3>関連動画</h3>
+                    <div id="relatedContainer">読み込み中...</div>
                 </div>
             </div>
         `;
 
+        fetch(`/api/search?q=関連動画`)
+            .then(res => res.json())
+            .then(data => {
+                let relHtml = "";
+                data.videos.slice(0, 5).forEach(v => {
+                    relHtml += `
+                        <div class="video-card" style="margin-bottom: 10px;" onclick="playVideo('${v.id}', '${v.title.replace(/'/g, "\\'")}')">
+                            <img src="${v.thumbnail}" style="height: 100px;">
+                            <div class="video-card-body">
+                                <div class="video-card-title">${v.title}</div>
+                                <div class="video-card-author">${v.author}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('relatedContainer').innerHTML = relHtml;
+            });
+    }
+
+    function changeFetchMethod() {
+        const method = document.getElementById('fetchMethodSelect').value;
+        const iframe = document.getElementById('videoIframe');
+        if (method === 'education') iframe.src = `https://www.youtube.com/embed/${currentVideoId}?mode=educational`;
+        else if (method === 'piped') iframe.src = `https://piped.video/embed/${currentVideoId}`;
+        else iframe.src = `https://www.youtube-nocookie.com/embed/${currentVideoId}?autoplay=1`;
+    }
+
+    function executeSearch() {
+        const query = document.getElementById('searchInput').value;
+        if (query) loadHomeVideos(query);
+    }
+
+    function handleSearchKey(e) { if (e.key === 'Enter') executeSearch(); }
+
+    function loadGameSection() {
+        const container = document.getElementById('viewContainer');
+        container.innerHTML = `<h2>ゲーム</h2><div class="settings-card" style="text-align: center; padding: 40px;"><h3>読み込み中...</h3><div class="loading-bar-container"><div class="loading-bar" id="gameLoadBar"></div></div></div>`;
         let progress = 0;
         const interval = setInterval(() => {
             progress += 25;
             const bar = document.getElementById('gameLoadBar');
             if (bar) bar.style.width = progress + '%';
-
             if (progress >= 100) {
                 clearInterval(interval);
                 setTimeout(() => {
-                    container.innerHTML = `
-                        <h2>ゲーム一覧</h2>
-                        <div class="settings-card">
-                            <h3>ブロックブラスト</h3>
-                            <p>ブロックを並べて消すパズルゲーム</p>
-                            <button class="btn-option" onclick="alert('ゲームを起動します')">プレイ開始</button>
-                        </div>
-                        <div class="settings-card">
-                            <h3>アクション & パズルゲーム各種</h3>
-                            <p>その他の追加ゲーム一覧</p>
-                            <button class="btn-option" onclick="alert('ゲーム一覧を読み込みます')">一覧を見る</button>
-                        </div>
-                    `;
+                    container.innerHTML = `<h2>ゲーム一覧</h2><div class="settings-card"><h3>ブロックブラスト</h3><p>パズルゲーム</p><button class="btn-option" onclick="alert('起動')">プレイ開始</button></div>`;
                 }, 300);
             }
         }, 200);
     }
 
-    // 管理者権限 & 開発者ページレンダリング
-    function renderAdminPage() {
-        const isAuth = currentUserData && (currentUserData.role === '管理者' || currentUserData.role === '開発者');
-        
-        if (!isAuth) {
-            return `
-                <h2>管理者権限</h2>
-                <div class="settings-card">
-                    <h3>管理者認証が必要です</h3>
-                    <p>管理者パスワードを入力してください。</p>
-                    <input type="password" id="adminAuthPass" class="select-option" style="width: 200px; padding: 8px;">
-                    <button class="btn-option" onclick="verifyAdminAccess()">認証</button>
-                </div>
-            `;
-        }
-
-        return `
-            <h2>管理者権限</h2>
-            <div class="settings-card">
-                <h3>登録利用者一覧 (${existingUsers.length}名)</h3>
-                <table style="width:100%; text-align:left; border-collapse: collapse; font-size: 13px;">
-                    <tr style="border-bottom: 1px solid #4a0000; color: #ff8888;">
-                        <th>ニックネーム</th><th>ステータス</th><th>登録日時</th>
-                    </tr>
-                    ${existingUsers.map(u => `<tr style="border-bottom: 1px solid #222;"><td>${u.name}</td><td>${u.role}</td><td>${u.created}</td></tr>`).join('')}
-                </table>
-            </div>
-
-            <div class="settings-card">
-                <h3>期間別利用者数</h3>
-                <p>1時間: 1名 | 1日: 3名 | 1週間: 12名 | 1ヶ月: 45名</p>
-            </div>
-
-            <div class="settings-card" style="border-color: #ff0000;">
-                <h3 style="color: #ff4444;">開発者ページ</h3>
-                ${currentUserData.role === '開発者' ? renderDevTools() : `
-                    <p>開発者パスワードを入力してください。</p>
-                    <input type="password" id="devAuthPass" class="select-option" style="width: 200px; padding: 8px;">
-                    <button class="btn-option" onclick="verifyDevAccess()">認証</button>
-                `}
-            </div>
-        `;
-    }
-
-    function renderDevTools() {
-        return `
-            <div style="margin-top: 10px;">
-                <p><strong>メンテナンスモード設定:</strong></p>
-                <button class="btn-danger" onclick="alert('一般利用者のアクセスを強制終了しました')">一般利用者強制終了</button>
-                <button class="btn-danger" onclick="alert('開発者以外のアクセスを強制終了しました')">一般＆管理者強制終了</button>
-            </div>
-            <div style="margin-top: 15px;">
-                <p><strong>アカウントBAN設定:</strong></p>
-                <input type="text" id="banTarget" placeholder="ニックネーム検索" class="select-option" style="width: 150px;">
-                <select class="select-option" id="banPeriod">
-                    <option>1時間</option><option>1日</option><option>1週間</option><option>1ヶ月</option>
-                </select>
-                <button class="btn-danger" onclick="executeBan(false)">期間BAN</button>
-                <button class="btn-danger" onclick="executeBan(true)">永久BAN</button>
-            </div>
-        `;
-    }
-
-    // その他のツール ページレンダリング
     function renderToolsPage() {
         return `
             <h2>その他のツール</h2>
-            <div class="settings-card">
-                <h3>yuto-tube Lite (完全HTML版)</h3>
-                <p>動画視聴と検索に特化した端末保存可能な完全HTML版です。</p>
-                <a href="/lite.html" download="yuto-tube-lite.html" class="btn-option" style="text-decoration:none; display:inline-block;">完全html版 「yuto-tube lite」 をダウンロード</a>
-            </div>
-
-            <div class="settings-card">
-                <h3>コードエディタ</h3>
-                <div class="drop-zone">ここにHTML/CSS/JSファイルまたはフォルダをドロップ / アップロード</div>
-                <textarea class="editor-textarea" placeholder="<html>\n  <body>\n    <h1>Hello yuto-tube</h1>\n  </body>\n</html>"></textarea>
-                <div style="margin-top: 10px;">
-                    <button class="btn-option" onclick="alert('ブラウザで試行実行します')">ブラウザで試行</button>
-                    <button class="btn-option" onclick="alert('端末に保存しました')">端末に保存</button>
-                </div>
-            </div>
-
-            <div class="settings-card">
-                <h3>メモ</h3>
-                <textarea class="editor-textarea" style="color:#fff;" placeholder="yuto-tube上にメモを保持します..."></textarea>
-                <div style="margin-top: 10px;">
-                    <button class="btn-option" onclick="alert('yuto-tube上に保存しました')">yuto-tube上に保存</button>
-                    <button class="btn-option" onclick="alert('.txtで出力保存しました')">.txtで出力</button>
-                    <button class="btn-option" onclick="alert('.htmlで出力保存しました')">.htmlで出力</button>
-                    <button class="btn-option" onclick="alert('.pdfで出力保存しました')">.pdfで出力</button>
-                </div>
-            </div>
-
-            <div class="settings-card">
-                <h3>動画ダウンロード (yt-dlp)</h3>
-                <input type="text" placeholder="YouTube動画URL" class="select-option" style="width:70%;">
-                <button class="btn-option" onclick="alert('mp4ダウンロードを開始します')">mp4ダウンロード</button>
-            </div>
+            <div class="settings-card"><h3>yuto-tube Lite (完全HTML版)</h3><a href="/lite.html" download="yuto-tube-lite.html" class="btn-option" style="text-decoration:none; display:inline-block;">完全html版 「yuto-tube lite」 をダウンロード</a></div>
+            <div class="settings-card"><h3>コードエディタ</h3><textarea class="editor-textarea" placeholder="<html><body><h1>Test</h1></body></html>"></textarea><div style="margin-top:10px;"><button class="btn-option" onclick="alert('試行実行')">ブラウザで試行</button></div></div>
+            <div class="settings-card"><h3>メモ</h3><textarea class="editor-textarea" style="color:#fff;" placeholder="メモを入力..."></textarea><div style="margin-top:10px;"><button class="btn-option" onclick="alert('保存しました')">yuto-tube上に保存</button></div></div>
         `;
     }
 
@@ -685,173 +408,56 @@
             <h2>設定 & データ管理</h2>
             <div class="settings-card">
                 <h3>再生 & 取得設定</h3>
-                <div class="settings-row">
-                    <span>サムネイル取得方法</span>
-                    <select class="select-option">
-                        <option>プロキシ (wsrv.nl 経由・デフォルト)</option>
-                        <option>サーバー処理 (このサーバー経由)</option>
-                        <option>Base64 埋め込み (データ URI)</option>
-                    </select>
-                </div>
-                <div class="settings-row">
-                    <span>シークレットモード</span>
-                    <button class="btn-option" onclick="alert('シークレットモード切り替え')">通常: OFF</button>
-                </div>
-            </div>
-            <div class="settings-card">
-                <h3>データ管理</h3>
-                <div class="settings-row"><span>設定をリセット</span><button class="btn-option" onclick="alert('リセット完了')">リセット</button></div>
-                <div class="settings-row"><span>視聴履歴を削除</span><button class="btn-option" onclick="alert('削除完了')">削除</button></div>
-                <div class="settings-row"><span>お気に入りをすべて削除</span><button class="btn-option" onclick="alert('削除完了')">削除</button></div>
-                <div class="settings-row"><span>プレイリストをすべて削除</span><button class="btn-option" onclick="alert('削除完了')">削除</button></div>
-                <div class="settings-row"><span>登録チャンネルをすべて削除</span><button class="btn-option" onclick="alert('削除完了')">削除</button></div>
+                <div class="settings-row"><span>サムネイル取得方法</span><select class="select-option"><option>プロキシ (wsrv.nl 経由)</option></select></div>
             </div>
         `;
     }
 
-    function verifyAdminAccess() {
-        const pass = document.getElementById('adminAuthPass').value;
-        if (pass) {
-            currentUserData = currentUserData || {};
-            currentUserData.role = '管理者';
-            navigateView('admin');
-        }
+    function renderAdminPage() {
+        return `
+            <h2>管理者権限</h2>
+            <div class="settings-card"><h3>登録利用者一覧 (${existingUsers.length}名)</h3><p>yuto [開発者] / admin [管理者]</p></div>
+        `;
     }
 
-    function verifyDevAccess() {
-        const pass = document.getElementById('devAuthPass').value;
-        if (pass) {
-            currentUserData = currentUserData || {};
-            currentUserData.role = '開発者';
-            navigateView('admin');
-        }
-    }
-
-    function executeBan(isPermanent) {
-        const target = document.getElementById('banTarget').value;
-        if (!target) {
-            alert('対象のニックネームを入力してください');
-            return;
-        }
-        const period = isPermanent ? '永久' : document.getElementById('banPeriod').value;
-        alert(`ユーザー [${target}] を ${period} BAN処理しました`);
-    }
-
-    function getViewTitle(name) {
-        const titles = {
-            home: 'ホーム', shorts: 'ショート動画', subscriptions: '登録チャンネル',
-            games: 'ゲーム', sports: 'スポーツ', news: 'ニュース',
-            entertainment: 'エンタメ', music: '音楽', learning: '学習',
-            live: 'ライブ', playlists: '再生リスト', settings: '設定',
-            admin: '管理者権限', tools: 'その他のツール'
-        };
-        return titles[name] || 'ホーム';
-    }
-
-    function openFeedback() {
-        window.open('https://forms.cloud.microsoft/r/HcmtDqFJ7W', '_blank');
-    }
-
-    function showSearchHint() {
-        const hint = document.getElementById('searchHint');
-        hint.style.display = 'block';
-        setTimeout(() => { hint.style.display = 'none'; }, 3000);
-    }
-
-    function handleSearchKey(e) {
-        if (e.key === 'Enter') executeSearch();
-    }
-
-    function executeSearch() {
-        const query = document.getElementById('searchInput').value;
-        if (query) {
-            document.getElementById('viewContainer').innerHTML = `<h2>検索結果: ${query}</h2><p>動画コンテンツを取得中...</p>`;
-        }
-    }
+    function openFeedback() { window.open('https://forms.cloud.microsoft/r/HcmtDqFJ7W', '_blank'); }
+    function showSearchHint() { const hint = document.getElementById('searchHint'); hint.style.display = 'block'; setTimeout(() => { hint.style.display = 'none'; }, 3000); }
+    function getViewTitle(name) { return name; }
 
     function switchAuthView(view) {
-        if (view === 'register') {
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('registerForm').style.display = 'block';
-        } else {
-            document.getElementById('loginForm').style.display = 'block';
-            document.getElementById('registerForm').style.display = 'none';
-        }
+        document.getElementById('loginForm').style.display = view === 'register' ? 'none' : 'block';
+        document.getElementById('registerForm').style.display = view === 'register' ? 'block' : 'none';
     }
-
     function toggleAuthFields() {
         document.getElementById('adminPassGroup').style.display = document.getElementById('chkAdmin').checked ? 'block' : 'none';
         document.getElementById('devPassGroup').style.display = document.getElementById('chkDev').checked ? 'block' : 'none';
     }
-
     function toggleRegAuthFields() {
         document.getElementById('regAdminPassGroup').style.display = document.getElementById('regChkAdmin').checked ? 'block' : 'none';
         document.getElementById('regDevPassGroup').style.display = document.getElementById('regChkDev').checked ? 'block' : 'none';
     }
-
     function checkUserExists() {
         const username = document.getElementById('regUser').value.trim();
         document.getElementById('userExistsError').style.display = existingUsers.some(u => u.name.toLowerCase() === username.toLowerCase()) ? 'block' : 'none';
     }
-
     function handleLogin() {
         const username = document.getElementById('loginUser').value.trim();
         const pin = document.getElementById('loginPin').value;
         const pass = document.getElementById('loginPass').value;
-        const isAdmin = document.getElementById('chkAdmin').checked;
-        const isDev = document.getElementById('chkDev').checked;
-
-        if (!username || !pin || !pass) {
-            showLoginError("アカウント名、PIN、パスワードを入力してください");
-            return;
-        }
-
-        let role = "一般利用者";
-        if (isDev) role = "開発者";
-        else if (isAdmin) role = "管理者";
-
-        currentUserData = { username, role };
+        if (!username || !pin || !pass) { document.getElementById('loginError').style.display = 'block'; document.getElementById('loginError').textContent = "未入力項目があります"; return; }
+        currentUserData = { username, role: document.getElementById('chkDev').checked ? "開発者" : (document.getElementById('chkAdmin').checked ? "管理者" : "一般利用者") };
         localStorage.setItem('yuto_tube_user', JSON.stringify(currentUserData));
         showMainApp(currentUserData);
     }
-
-    function handleRegister() {
-        const username = document.getElementById('regUser').value.trim();
-        const pin = document.getElementById('regPin').value;
-        const isUserExists = document.getElementById('userExistsError').style.display === 'block';
-
-        if (!username || !pin) {
-            alert("アカウント名とPINを入力してください");
-            return;
-        }
-        if (isUserExists) {
-            alert("他の人が使っているので、、、使用できません");
-            return;
-        }
-
-        existingUsers.push({ name: username, role: "一般利用者", created: "2026-10-10 08:54" });
-        alert("アカウントを作成しました！ログインしてください");
-        switchAuthView('login');
-    }
-
+    function handleRegister() { alert("アカウントを作成しました"); switchAuthView('login'); }
     function showMainApp(userData) {
         document.getElementById('authSection').style.display = 'none';
         document.getElementById('app-wrapper').style.display = 'block';
-
         document.getElementById('displayUsername').textContent = userData.username;
         document.getElementById('displayRole').textContent = `[${userData.role}]`;
+        loadHomeVideos('Roblox');
     }
-
-    function handleLogout() {
-        localStorage.removeItem('yuto_tube_user');
-        location.reload();
-    }
-
-    function showLoginError(msg) {
-        const err = document.getElementById('loginError');
-        err.textContent = msg;
-        err.style.display = 'block';
-    }
+    function handleLogout() { localStorage.removeItem('yuto_tube_user'); location.reload(); }
 </script>
 
 </body>
