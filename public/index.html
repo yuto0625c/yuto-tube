@@ -24,7 +24,7 @@
             transition: all 0.3s ease;
         }
 
-        /* ログイン認証 */
+        /* 認証画面 */
         .auth-container {
             display: flex;
             justify-content: center;
@@ -85,12 +85,14 @@
         .user-info { display: flex; align-items: center; gap: 10px; font-size: 13px; }
         .logout-btn { background-color: #333; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; }
 
-        /* サイドバー */
+        /* サイドバー (ジャンルと機能をしっかり区分け) */
         .sidebar { position: fixed; top: 55px; left: -250px; width: var(--sidebar-width); height: calc(100vh - 55px); background-color: var(--header-bg); border-right: 1px solid var(--border-color); transition: left 0.3s ease; overflow-y: auto; z-index: 999; }
         .sidebar.active { left: 0; }
-        .sidebar-menu { list-style: none; padding: 10px 0; margin: 0; }
+        .sidebar-section-title { font-size: 11px; color: #888; padding: 10px 20px 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .sidebar-menu { list-style: none; padding: 0 0 10px 0; margin: 0; }
         .sidebar-menu li { padding: 12px 20px; font-size: 14px; cursor: pointer; border-bottom: 1px solid #1a0000; transition: background 0.2s; }
         .sidebar-menu li:hover { background-color: var(--card-bg); color: var(--accent-color); }
+        .sidebar-divider { border-top: 1px solid var(--border-color); margin: 5px 0; }
 
         .main-content { padding: 20px; transition: margin-left 0.3s ease; }
         .main-content.shifted { margin-left: var(--sidebar-width); }
@@ -171,7 +173,7 @@
     <header>
         <div class="header-left">
             <div class="menu-btn" onclick="toggleSidebar()">≡</div>
-            <a onclick="navigateView('home')" class="logo">yuto-tube v14.26.8.1.01</a>
+            <a onclick="selectGenre('ホーム', 'Roblox')" class="logo">yuto-tube v14.26.8.1.01</a>
         </div>
         <div class="search-container">
             <input type="text" class="search-box" placeholder="検索" id="searchInput" onkeypress="handleSearchKey(event)">
@@ -187,21 +189,30 @@
     </header>
 
     <nav class="sidebar" id="sidebar">
+        <!-- 1. 動画ジャンル セクション -->
+        <div class="sidebar-section-title">動画ジャンル</div>
         <ul class="sidebar-menu">
-            <li onclick="navigateView('home')">ホーム</li>
-            <li onclick="navigateView('shorts')">ショート動画</li>
-            <li onclick="navigateView('subscriptions')">登録チャンネル</li>
-            <li onclick="navigateView('games')">ゲーム</li>
-            <li onclick="navigateView('sports')">スポーツ</li>
-            <li onclick="navigateView('news')">ニュース</li>
-            <li onclick="navigateView('entertainment')">エンタメ</li>
-            <li onclick="navigateView('music')">音楽</li>
-            <li onclick="navigateView('learning')">学習</li>
-            <li onclick="navigateView('live')">ライブ</li>
-            <li onclick="navigateView('playlists')">再生リスト</li>
-            <li onclick="navigateView('settings')">設定</li>
-            <li onclick="navigateView('admin')">管理者権限</li>
-            <li onclick="navigateView('tools')">その他のツール</li>
+            <li onclick="selectGenre('ホーム', 'Roblox')">ホーム</li>
+            <li onclick="selectGenre('ショート動画', 'YouTube Shorts')">ショート動画</li>
+            <li onclick="selectGenre('登録チャンネル', 'マエスケ')">登録チャンネル</li>
+            <li onclick="selectGenre('ゲーム', 'ゲーム実況')">ゲーム</li>
+            <li onclick="selectGenre('スポーツ', 'スポーツ ハイライト')">スポーツ</li>
+            <li onclick="selectGenre('ニュース', 'ニュース')">ニュース</li>
+            <li onclick="selectGenre('エンタメ', 'エンタメ メドレー')">エンタメ</li>
+            <li onclick="selectGenre('音楽', 'BGM 音楽')">音楽</li>
+            <li onclick="selectGenre('学習', 'プログラミング 解説')">学習</li>
+            <li onclick="selectGenre('ライブ', 'ライブ配信')">ライブ</li>
+        </ul>
+
+        <div class="sidebar-divider"></div>
+
+        <!-- 2. 機能・管理 セクション -->
+        <div class="sidebar-section-title">機能・設定</div>
+        <ul class="sidebar-menu">
+            <li onclick="navigateTool('playlists')">再生リスト</li>
+            <li onclick="navigateTool('settings')">設定</li>
+            <li onclick="navigateTool('admin')">管理者権限</li>
+            <li onclick="navigateTool('tools')">その他のツール</li>
             <li onclick="openFeedback()">フィードバックを送信</li>
         </ul>
     </nav>
@@ -260,27 +271,40 @@
         document.getElementById('mainContent').classList.toggle('shifted');
     }
 
-    function navigateView(viewName) {
-        if (viewName === 'home') loadHomeVideos('Roblox');
-        else if (viewName === 'settings') document.getElementById('viewContainer').innerHTML = renderSettingsPage();
-        else if (viewName === 'admin') document.getElementById('viewContainer').innerHTML = renderAdminPage();
-        else if (viewName === 'tools') document.getElementById('viewContainer').innerHTML = renderToolsPage();
-        else if (viewName === 'games') loadGameSection();
-        else document.getElementById('viewContainer').innerHTML = `<h2>${getViewTitle(viewName)}</h2><p>現在準備中です。</p>`;
+    // 動画ジャンル選択時の処理（自動検索）
+    function selectGenre(genreName, searchKeyword) {
+        loadHomeVideos(genreName, searchKeyword);
+        closeSidebar();
+    }
 
+    // ツール・設定項目選択時の処理
+    function navigateTool(toolName) {
+        const container = document.getElementById('viewContainer');
+        if (toolName === 'settings') container.innerHTML = renderSettingsPage();
+        else if (toolName === 'admin') container.innerHTML = renderAdminPage();
+        else if (toolName === 'tools') container.innerHTML = renderToolsPage();
+        else if (toolName === 'playlists') container.innerHTML = `<h2>再生リスト</h2><p>保存した再生リスト一覧です。</p>`;
+        closeSidebar();
+    }
+
+    function closeSidebar() {
         document.getElementById('sidebar').classList.remove('active');
         document.getElementById('mainContent').classList.remove('shifted');
     }
 
-    // ホーム動画一覧取得・描画
-    function loadHomeVideos(query) {
+    // 動画取得・グリッド描画
+    function loadHomeVideos(title, query) {
         const container = document.getElementById('viewContainer');
-        container.innerHTML = `<h2>ホーム (${query})</h2><p>動画を取得中...</p>`;
+        container.innerHTML = `<h2>${title}</h2><p>動画を取得中...</p>`;
 
         fetch(`/api/search?q=${encodeURIComponent(query)}`)
             .then(res => res.json())
             .then(data => {
-                let html = `<h2>ホーム (${query})</h2><div class="video-grid">`;
+                if (!data.videos || data.videos.length === 0) {
+                    container.innerHTML = `<h2>${title}</h2><p>該当する動画が見つかりませんでした。</p>`;
+                    return;
+                }
+                let html = `<h2>${title}</h2><div class="video-grid">`;
                 data.videos.forEach(v => {
                     html += `
                         <div class="video-card" onclick="playVideo('${v.id}', '${v.title.replace(/'/g, "\\'")}')">
@@ -300,7 +324,7 @@
             });
     }
 
-    // 動画再生画面表示
+    // 動画再生画面
     function playVideo(id, title) {
         currentVideoId = id;
         const container = document.getElementById('viewContainer');
@@ -343,7 +367,7 @@
             </div>
         `;
 
-        fetch(`/api/search?q=関連動画`)
+        fetch(`/api/search?q=おすすめ動画`)
             .then(res => res.json())
             .then(data => {
                 let relHtml = "";
@@ -372,27 +396,10 @@
 
     function executeSearch() {
         const query = document.getElementById('searchInput').value;
-        if (query) loadHomeVideos(query);
+        if (query) loadHomeVideos(`検索結果: ${query}`, query);
     }
 
     function handleSearchKey(e) { if (e.key === 'Enter') executeSearch(); }
-
-    function loadGameSection() {
-        const container = document.getElementById('viewContainer');
-        container.innerHTML = `<h2>ゲーム</h2><div class="settings-card" style="text-align: center; padding: 40px;"><h3>読み込み中...</h3><div class="loading-bar-container"><div class="loading-bar" id="gameLoadBar"></div></div></div>`;
-        let progress = 0;
-        const interval = setInterval(() => {
-            progress += 25;
-            const bar = document.getElementById('gameLoadBar');
-            if (bar) bar.style.width = progress + '%';
-            if (progress >= 100) {
-                clearInterval(interval);
-                setTimeout(() => {
-                    container.innerHTML = `<h2>ゲーム一覧</h2><div class="settings-card"><h3>ブロックブラスト</h3><p>パズルゲーム</p><button class="btn-option" onclick="alert('起動')">プレイ開始</button></div>`;
-                }, 300);
-            }
-        }, 200);
-    }
 
     function renderToolsPage() {
         return `
@@ -422,7 +429,6 @@
 
     function openFeedback() { window.open('https://forms.cloud.microsoft/r/HcmtDqFJ7W', '_blank'); }
     function showSearchHint() { const hint = document.getElementById('searchHint'); hint.style.display = 'block'; setTimeout(() => { hint.style.display = 'none'; }, 3000); }
-    function getViewTitle(name) { return name; }
 
     function switchAuthView(view) {
         document.getElementById('loginForm').style.display = view === 'register' ? 'none' : 'block';
@@ -455,7 +461,7 @@
         document.getElementById('app-wrapper').style.display = 'block';
         document.getElementById('displayUsername').textContent = userData.username;
         document.getElementById('displayRole').textContent = `[${userData.role}]`;
-        loadHomeVideos('Roblox');
+        selectGenre('ホーム', 'Roblox');
     }
     function handleLogout() { localStorage.removeItem('yuto_tube_user'); location.reload(); }
 </script>
