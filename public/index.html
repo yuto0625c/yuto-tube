@@ -18,65 +18,43 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-            transition: all 0.3s ease;
+            margin: 0; padding: 0; overflow-x: hidden;
         }
 
         /* 認証画面 */
         .auth-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            display: flex; justify-content: center; align-items: center; min-height: 100vh;
             background: radial-gradient(circle, #2a0000 0%, #080000 100%);
         }
         .auth-box {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 30px;
-            border-radius: 12px;
-            width: 320px;
+            background-color: var(--card-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; width: 320px;
             box-shadow: 0 0 20px rgba(229, 9, 20, 0.3);
         }
         .auth-title {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 22px;
+            text-align: center; margin-bottom: 20px; font-size: 22px;
             background: linear-gradient(to right, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
-            -webkit-background-clip: text;
-            color: transparent;
-            animation: rainbow 5s linear infinite;
+            -webkit-background-clip: text; color: transparent; animation: rainbow 5s linear infinite;
         }
-        @keyframes rainbow {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
-        }
+        @keyframes rainbow { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; margin-bottom: 5px; font-size: 13px; color: #ccc; }
-        .input-group input[type="text"],
-        .input-group input[type="password"],
-        .input-group input[type="email"] {
+        .input-group input[type="text"], .input-group input[type="password"], .input-group input[type="email"] {
             width: 100%; padding: 10px; box-sizing: border-box; background-color: #100000; border: 1px solid var(--border-color); color: white; border-radius: 5px; outline: none;
         }
         .checkbox-group { margin: 10px 0; font-size: 13px; }
-        .checkbox-group label { cursor: pointer; }
         .auth-btn { width: 100%; padding: 10px; background-color: var(--accent-color); border: none; color: white; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 10px; }
         .auth-btn:hover { background-color: #ff1e27; }
         .auth-links { margin-top: 15px; text-align: center; font-size: 12px; }
         .auth-links a { color: #ff6666; text-decoration: none; display: block; margin-top: 5px; cursor: pointer; }
 
-        /* ヘッダー & レイアウト */
+        /* メインアプリ構造 */
         #app-wrapper { display: none; }
         header {
             display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background-color: var(--header-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 1000;
         }
         .header-left { display: flex; align-items: center; gap: 15px; }
         .menu-btn { font-size: 24px; cursor: pointer; user-select: none; }
-        .logo {
-            font-weight: bold; font-size: 18px; text-decoration: none; background: linear-gradient(to right, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3); -webkit-background-clip: text; color: transparent; animation: rainbow 5s linear infinite; cursor: pointer;
-        }
+        .logo { font-weight: bold; font-size: 18px; text-decoration: none; background: linear-gradient(to right, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3); -webkit-background-clip: text; color: transparent; animation: rainbow 5s linear infinite; cursor: pointer; }
         .search-container { display: flex; flex-grow: 1; max-width: 500px; margin: 0 20px; position: relative; }
         .search-box { width: 100%; padding: 8px 15px; background-color: #100000; border: 1px solid var(--border-color); color: white; border-radius: 20px 0 0 20px; outline: none; }
         .search-btn { padding: 8px 18px; background-color: #2b0000; border: 1px solid var(--border-color); color: white; border-radius: 0 20px 20px 0; cursor: pointer; }
@@ -85,10 +63,10 @@
         .user-info { display: flex; align-items: center; gap: 10px; font-size: 13px; }
         .logout-btn { background-color: #333; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; }
 
-        /* サイドバー (ジャンルと機能をしっかり区分け) */
+        /* サイドバー */
         .sidebar { position: fixed; top: 55px; left: -250px; width: var(--sidebar-width); height: calc(100vh - 55px); background-color: var(--header-bg); border-right: 1px solid var(--border-color); transition: left 0.3s ease; overflow-y: auto; z-index: 999; }
         .sidebar.active { left: 0; }
-        .sidebar-section-title { font-size: 11px; color: #888; padding: 10px 20px 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .sidebar-section-title { font-size: 11px; color: #888; padding: 10px 20px 5px; text-transform: uppercase; }
         .sidebar-menu { list-style: none; padding: 0 0 10px 0; margin: 0; }
         .sidebar-menu li { padding: 12px 20px; font-size: 14px; cursor: pointer; border-bottom: 1px solid #1a0000; transition: background 0.2s; }
         .sidebar-menu li:hover { background-color: var(--card-bg); color: var(--accent-color); }
@@ -97,7 +75,7 @@
         .main-content { padding: 20px; transition: margin-left 0.3s ease; }
         .main-content.shifted { margin-left: var(--sidebar-width); }
 
-        /* 動画グリッド & プレイヤー */
+        /* グリッド & 設定 */
         .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-top: 15px; }
         .video-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
         .video-card:hover { transform: translateY(-3px); border-color: var(--accent-color); }
@@ -106,7 +84,6 @@
         .video-card-title { font-weight: bold; font-size: 14px; margin-bottom: 5px; color: #fff; line-height: 1.3; }
         .video-card-author { font-size: 12px; color: #aaa; }
 
-        /* 動画再生画面 */
         .watch-container { display: flex; gap: 20px; flex-wrap: wrap; }
         .video-primary { flex: 1 1 65%; min-width: 320px; }
         .video-secondary { flex: 1 1 30%; min-width: 280px; }
@@ -116,13 +93,11 @@
         .control-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; align-items: center; }
         .btn-option { background-color: #2b0000; border: 1px solid var(--border-color); color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
         .btn-option:hover { background-color: var(--accent-color); }
-        .btn-danger { background-color: #880000; border: 1px solid #aa0000; color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
         .select-option { background-color: #100000; border: 1px solid var(--border-color); color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; }
+        
         .settings-card { background-color: var(--card-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
         .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #2a0000; }
         .editor-textarea { width: 100%; height: 180px; background-color: #050000; border: 1px solid var(--border-color); color: #00ff88; font-family: monospace; padding: 10px; box-sizing: border-box; border-radius: 5px; outline: none; }
-        .loading-bar-container { width: 100%; background-color: #222; height: 10px; border-radius: 5px; overflow: hidden; margin-top: 10px; }
-        .loading-bar { width: 0%; height: 100%; background-color: var(--accent-color); transition: width 0.3s; }
         .error-msg { color: #ff4444; font-size: 12px; margin-top: 5px; display: none; }
     </style>
 </head>
@@ -153,7 +128,11 @@
 
     <div class="auth-box" id="registerForm" style="display: none;">
         <div class="auth-title">新規作成</div>
-        <div class="input-group"><label>アカウント名</label><input type="text" id="regUser" autocomplete="off" onblur="checkUserExists()"><div class="error-msg" id="userExistsError">他の人が使っているので、、、使用できません</div></div>
+        <div class="input-group">
+            <label>アカウント名</label>
+            <input type="text" id="regUser" autocomplete="off" oninput="checkUserExists()">
+            <div class="error-msg" id="userExistsError">他の人が使っているので、、、使用できません</div>
+        </div>
         <div class="input-group"><label>メールアドレス (空欄可)</label><input type="email" id="regEmail" autocomplete="off"></div>
         <div class="input-group"><label>PIN</label><input type="password" id="regPin" autocomplete="off"></div>
 
@@ -189,24 +168,22 @@
     </header>
 
     <nav class="sidebar" id="sidebar">
-        <!-- 1. 動画ジャンル セクション -->
         <div class="sidebar-section-title">動画ジャンル</div>
         <ul class="sidebar-menu">
             <li onclick="selectGenre('ホーム', 'Roblox')">ホーム</li>
-            <li onclick="selectGenre('ショート動画', 'YouTube Shorts')">ショート動画</li>
+            <li onclick="selectGenre('ショート動画', 'Shorts')">ショート動画</li>
             <li onclick="selectGenre('登録チャンネル', 'マエスケ')">登録チャンネル</li>
-            <li onclick="selectGenre('ゲーム', 'ゲーム実況')">ゲーム</li>
-            <li onclick="selectGenre('スポーツ', 'スポーツ ハイライト')">スポーツ</li>
+            <li onclick="selectGenre('ゲーム', 'ゲーム')">ゲーム</li>
+            <li onclick="selectGenre('スポーツ', 'スポーツ')">スポーツ</li>
             <li onclick="selectGenre('ニュース', 'ニュース')">ニュース</li>
-            <li onclick="selectGenre('エンタメ', 'エンタメ メドレー')">エンタメ</li>
-            <li onclick="selectGenre('音楽', 'BGM 音楽')">音楽</li>
-            <li onclick="selectGenre('学習', 'プログラミング 解説')">学習</li>
+            <li onclick="selectGenre('エンタメ', 'エンタメ')">エンタメ</li>
+            <li onclick="selectGenre('音楽', '音楽')">音楽</li>
+            <li onclick="selectGenre('学習', '学習')">学習</li>
             <li onclick="selectGenre('ライブ', 'ライブ配信')">ライブ</li>
         </ul>
 
         <div class="sidebar-divider"></div>
 
-        <!-- 2. 機能・管理 セクション -->
         <div class="sidebar-section-title">機能・設定</div>
         <ul class="sidebar-menu">
             <li onclick="navigateTool('playlists')">再生リスト</li>
@@ -225,10 +202,19 @@
 <script>
     let currentUserData = null;
     let currentVideoId = "dQw4w9WgXcQ";
-    const existingUsers = [
-        { name: "yuto", role: "開発者", created: "2026-10-01 00:00" },
-        { name: "admin", role: "管理者", created: "2026-10-02 12:30" }
-    ];
+
+    // アカウントの永続保存用データ（localStorageから読み込み）
+    function getRegisteredAccounts() {
+        const accounts = localStorage.getItem('yuto_tube_accounts');
+        return accounts ? JSON.parse(accounts) : [
+            { username: "yuto", pin: "1234", pass: "yuto", role: "開発者" },
+            { username: "admin", pin: "0000", pass: "admin", role: "管理者" }
+        ];
+    }
+
+    function saveRegisteredAccounts(accounts) {
+        localStorage.setItem('yuto_tube_accounts', JSON.stringify(accounts));
+    }
 
     window.onload = function() {
         updateClock();
@@ -246,8 +232,7 @@
                 if (activeTag !== 'input' && activeTag !== 'textarea') {
                     if (e.key === '/') {
                         e.preventDefault();
-                        const searchBox = document.getElementById('searchInput');
-                        searchBox.focus();
+                        document.getElementById('searchInput').focus();
                         showSearchHint();
                     }
                 }
@@ -260,8 +245,7 @@
         let hours = now.getHours();
         let minutes = now.getMinutes();
         const ampm = hours >= 12 ? 'P.M' : 'A.M';
-        hours = hours % 12;
-        hours = hours ? hours : 12;
+        hours = hours % 12 || 12;
         minutes = minutes < 10 ? '0' + minutes : minutes;
         document.getElementById('clock').textContent = hours + ':' + minutes + ' ' + ampm;
     }
@@ -271,13 +255,11 @@
         document.getElementById('mainContent').classList.toggle('shifted');
     }
 
-    // 動画ジャンル選択時の処理（自動検索）
     function selectGenre(genreName, searchKeyword) {
         loadHomeVideos(genreName, searchKeyword);
         closeSidebar();
     }
 
-    // ツール・設定項目選択時の処理
     function navigateTool(toolName) {
         const container = document.getElementById('viewContainer');
         if (toolName === 'settings') container.innerHTML = renderSettingsPage();
@@ -292,7 +274,6 @@
         document.getElementById('mainContent').classList.remove('shifted');
     }
 
-    // 動画取得・グリッド描画
     function loadHomeVideos(title, query) {
         const container = document.getElementById('viewContainer');
         container.innerHTML = `<h2>${title}</h2><p>動画を取得中...</p>`;
@@ -324,7 +305,6 @@
             });
     }
 
-    // 動画再生画面
     function playVideo(id, title) {
         currentVideoId = id;
         const container = document.getElementById('viewContainer');
@@ -341,18 +321,11 @@
                                 <option value="nocookie">nocookie再生</option>
                                 <option value="stream">ストリーム再生</option>
                                 <option value="education">education再生</option>
-                                <option value="piped">Piped</option>
-                                <option value="invidious">Invidious</option>
                             </select>
                             <label>画質:</label>
                             <select class="select-option">
                                 <option>1072p</option><option>804p</option><option>360p</option><option>音声のみ</option>
                             </select>
-                        </div>
-                        <div class="control-row">
-                            <button class="btn-option" onclick="alert('ループ切り替え')">ループ再生</button>
-                            <button class="btn-option" onclick="alert('yt-dlpダウンロード処理を開始します')">保存 (yt-dlp)</button>
-                            <button class="btn-option" onclick="alert('字幕切替')">字幕 (C)</button>
                         </div>
                     </div>
                     <div class="settings-card" style="margin-top: 15px;">
@@ -360,37 +333,14 @@
                         <p style="color: #aaa; font-size: 13px;">yuto-tube プレイヤーでストリーム再生中</p>
                     </div>
                 </div>
-                <div class="video-secondary">
-                    <h3>関連動画</h3>
-                    <div id="relatedContainer">読み込み中...</div>
-                </div>
             </div>
         `;
-
-        fetch(`/api/search?q=おすすめ動画`)
-            .then(res => res.json())
-            .then(data => {
-                let relHtml = "";
-                data.videos.slice(0, 5).forEach(v => {
-                    relHtml += `
-                        <div class="video-card" style="margin-bottom: 10px;" onclick="playVideo('${v.id}', '${v.title.replace(/'/g, "\\'")}')">
-                            <img src="${v.thumbnail}" style="height: 100px;">
-                            <div class="video-card-body">
-                                <div class="video-card-title">${v.title}</div>
-                                <div class="video-card-author">${v.author}</div>
-                            </div>
-                        </div>
-                    `;
-                });
-                document.getElementById('relatedContainer').innerHTML = relHtml;
-            });
     }
 
     function changeFetchMethod() {
         const method = document.getElementById('fetchMethodSelect').value;
         const iframe = document.getElementById('videoIframe');
         if (method === 'education') iframe.src = `https://www.youtube.com/embed/${currentVideoId}?mode=educational`;
-        else if (method === 'piped') iframe.src = `https://piped.video/embed/${currentVideoId}`;
         else iframe.src = `https://www.youtube-nocookie.com/embed/${currentVideoId}?autoplay=1`;
     }
 
@@ -401,29 +351,71 @@
 
     function handleSearchKey(e) { if (e.key === 'Enter') executeSearch(); }
 
-    function renderToolsPage() {
-        return `
-            <h2>その他のツール</h2>
-            <div class="settings-card"><h3>yuto-tube Lite (完全HTML版)</h3><a href="/lite.html" download="yuto-tube-lite.html" class="btn-option" style="text-decoration:none; display:inline-block;">完全html版 「yuto-tube lite」 をダウンロード</a></div>
-            <div class="settings-card"><h3>コードエディタ</h3><textarea class="editor-textarea" placeholder="<html><body><h1>Test</h1></body></html>"></textarea><div style="margin-top:10px;"><button class="btn-option" onclick="alert('試行実行')">ブラウザで試行</button></div></div>
-            <div class="settings-card"><h3>メモ</h3><textarea class="editor-textarea" style="color:#fff;" placeholder="メモを入力..."></textarea><div style="margin-top:10px;"><button class="btn-option" onclick="alert('保存しました')">yuto-tube上に保存</button></div></div>
-        `;
-    }
-
+    // 要件通りの「設定 & データ管理」完全項目復元
     function renderSettingsPage() {
         return `
             <h2>設定 & データ管理</h2>
             <div class="settings-card">
                 <h3>再生 & 取得設定</h3>
-                <div class="settings-row"><span>サムネイル取得方法</span><select class="select-option"><option>プロキシ (wsrv.nl 経由)</option></select></div>
+                <div class="settings-row">
+                    <span>サムネイル取得方法</span>
+                    <select class="select-option">
+                        <option>プロキシ (wsrv.nl 経由・デフォルト)</option>
+                        <option>サーバー処理 (このサーバー経由)</option>
+                        <option>Base64 埋め込み (データ URI)</option>
+                    </select>
+                </div>
+                <div class="settings-row">
+                    <span>シークレットモード</span>
+                    <button class="btn-option" onclick="alert('シークレットモード切り替え')">通常: OFF</button>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <h3>データ管理</h3>
+                <div class="settings-row">
+                    <span>設定をリセット</span>
+                    <button class="btn-option" onclick="alert('設定を初期化しました')">リセット</button>
+                </div>
+                <div class="settings-row">
+                    <span>視聴履歴を削除</span>
+                    <button class="btn-option" onclick="alert('視聴履歴を削除しました')">削除</button>
+                </div>
+                <div class="settings-row">
+                    <span>お気に入りをすべて削除</span>
+                    <button class="btn-option" onclick="alert('お気に入りを削除しました')">削除</button>
+                </div>
+                <div class="settings-row">
+                    <span>プレイリストをすべて削除</span>
+                    <button class="btn-option" onclick="alert('プレイリストを削除しました')">削除</button>
+                </div>
+                <div class="settings-row">
+                    <span>登録チャンネルをすべて削除</span>
+                    <button class="btn-option" onclick="alert('登録チャンネルを解除しました')">削除</button>
+                </div>
             </div>
         `;
     }
 
+    function renderToolsPage() {
+        return `
+            <h2>その他のツール</h2>
+            <div class="settings-card"><h3>yuto-tube Lite (完全HTML版)</h3><a href="/lite.html" download="yuto-tube-lite.html" class="btn-option" style="text-decoration:none; display:inline-block;">完全html版 「yuto-tube lite」 をダウンロード</a></div>
+            <div class="settings-card"><h3>コードエディタ</h3><textarea class="editor-textarea" placeholder="<html><body><h1>Test</h1></body></html>"></textarea></div>
+            <div class="settings-card"><h3>メモ</h3><textarea class="editor-textarea" style="color:#fff;" placeholder="メモを入力..."></textarea></div>
+        `;
+    }
+
     function renderAdminPage() {
+        const accounts = getRegisteredAccounts();
         return `
             <h2>管理者権限</h2>
-            <div class="settings-card"><h3>登録利用者一覧 (${existingUsers.length}名)</h3><p>yuto [開発者] / admin [管理者]</p></div>
+            <div class="settings-card">
+                <h3>登録利用者一覧 (${accounts.length}名)</h3>
+                <ul style="font-size: 13px; color: #ccc;">
+                    ${accounts.map(a => `<li>${a.username} [${a.role || '一般'}]</li>`).join('')}
+                </ul>
+            </div>
         `;
     }
 
@@ -434,28 +426,82 @@
         document.getElementById('loginForm').style.display = view === 'register' ? 'none' : 'block';
         document.getElementById('registerForm').style.display = view === 'register' ? 'block' : 'none';
     }
+
     function toggleAuthFields() {
         document.getElementById('adminPassGroup').style.display = document.getElementById('chkAdmin').checked ? 'block' : 'none';
         document.getElementById('devPassGroup').style.display = document.getElementById('chkDev').checked ? 'block' : 'none';
     }
+
     function toggleRegAuthFields() {
         document.getElementById('regAdminPassGroup').style.display = document.getElementById('regChkAdmin').checked ? 'block' : 'none';
         document.getElementById('regDevPassGroup').style.display = document.getElementById('regChkDev').checked ? 'block' : 'none';
     }
+
+    // 重複アカウント検証（リアルタイム）
     function checkUserExists() {
-        const username = document.getElementById('regUser').value.trim();
-        document.getElementById('userExistsError').style.display = existingUsers.some(u => u.name.toLowerCase() === username.toLowerCase()) ? 'block' : 'none';
+        const username = document.getElementById('regUser').value.trim().toLowerCase();
+        const accounts = getRegisteredAccounts();
+        const isExist = accounts.some(a => a.username.toLowerCase() === username);
+        document.getElementById('userExistsError').style.display = isExist ? 'block' : 'none';
+        return isExist;
     }
+
+    // 厳格ログイン認証（登録アカウントのみ通過）
     function handleLogin() {
         const username = document.getElementById('loginUser').value.trim();
         const pin = document.getElementById('loginPin').value;
         const pass = document.getElementById('loginPass').value;
-        if (!username || !pin || !pass) { document.getElementById('loginError').style.display = 'block'; document.getElementById('loginError').textContent = "未入力項目があります"; return; }
-        currentUserData = { username, role: document.getElementById('chkDev').checked ? "開発者" : (document.getElementById('chkAdmin').checked ? "管理者" : "一般利用者") };
+        const err = document.getElementById('loginError');
+
+        if (!username || !pin || !pass) {
+            err.style.display = 'block';
+            err.textContent = "アカウント名、PIN、パスワードをすべて入力してください";
+            return;
+        }
+
+        const accounts = getRegisteredAccounts();
+        const account = accounts.find(a => a.username.toLowerCase() === username.toLowerCase() && a.pin === pin && a.pass === pass);
+
+        if (!account) {
+            err.style.display = 'block';
+            err.textContent = "アカウントが存在しないか、PIN/パスワードが一致しません";
+            return;
+        }
+
+        currentUserData = { username: account.username, role: account.role || "一般利用者" };
         localStorage.setItem('yuto_tube_user', JSON.stringify(currentUserData));
         showMainApp(currentUserData);
     }
-    function handleRegister() { alert("アカウントを作成しました"); switchAuthView('login'); }
+
+    // 正しい新規アカウント登録
+    function handleRegister() {
+        const username = document.getElementById('regUser').value.trim();
+        const pin = document.getElementById('regPin').value;
+        const regAdmin = document.getElementById('regChkAdmin').checked;
+        const regDev = document.getElementById('regChkDev').checked;
+
+        if (!username || !pin) {
+            alert("アカウント名とPINを入力してください");
+            return;
+        }
+
+        if (checkUserExists()) {
+            alert("他の人が使っているので、、、使用できません");
+            return;
+        }
+
+        let role = "一般利用者";
+        if (regDev) role = "開発者";
+        else if (regAdmin) role = "管理者";
+
+        const accounts = getRegisteredAccounts();
+        accounts.push({ username, pin, pass: pin, role });
+        saveRegisteredAccounts(accounts);
+
+        alert("アカウントを作成しました！ログイン画面からログインしてください");
+        switchAuthView('login');
+    }
+
     function showMainApp(userData) {
         document.getElementById('authSection').style.display = 'none';
         document.getElementById('app-wrapper').style.display = 'block';
@@ -463,7 +509,11 @@
         document.getElementById('displayRole').textContent = `[${userData.role}]`;
         selectGenre('ホーム', 'Roblox');
     }
-    function handleLogout() { localStorage.removeItem('yuto_tube_user'); location.reload(); }
+
+    function handleLogout() {
+        localStorage.removeItem('yuto_tube_user');
+        location.reload();
+    }
 </script>
 
 </body>
