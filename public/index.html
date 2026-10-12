@@ -4,16 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>yuto-tube v14.26.8.1.01</title>
-    <!-- Chart.js グラフライブラリ -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* テーマカラー：赤と黒 (テキストやボタンは白以外の鮮やかな色) */
         :root {
             --bg-color: #080000;
             --header-bg: #180303;
-            --accent-color: #ff2222;
-            --text-color: #ffcccc; /* 白以外の赤系明色 */
-            --card-bg: #220808;
+            --accent-color: #ff1111;
+            --text-color: #ffcccc;
+            --card-bg: #220505;
             --border-color: #660000;
             --btn-bg: #4a0000;
             --btn-hover: #880000;
@@ -26,25 +24,26 @@
             margin: 0; padding: 0; overflow-x: hidden;
         }
 
-        /* パスワード表示切替の目マーク用 */
+        /* パスワード表示切替ボタン */
         .password-wrapper { position: relative; width: 100%; }
         .toggle-password {
             position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
-            cursor: pointer; font-size: 14px; color: #ff8888; user-select: none;
+            cursor: pointer; font-size: 12px; color: #ff8888; user-select: none;
+            background: #2a0000; padding: 2px 6px; border-radius: 3px; border: 1px solid #660000;
         }
 
-        /* 認証・プランA モーダル */
+        /* 認証モーダル (赤基調デザイン) */
         .auth-container {
             display: flex; justify-content: center; align-items: center; min-height: 100vh;
-            background: radial-gradient(circle, #330000 0%, #080000 100%);
+            background: radial-gradient(circle, #3d0000 0%, #080000 100%);
         }
         .auth-box {
-            background-color: var(--card-bg); border: 1px solid var(--border-color);
-            padding: 25px; border-radius: 12px; width: 340px; box-shadow: 0 0 25px rgba(255, 34, 34, 0.3);
+            background-color: var(--card-bg); border: 2px solid var(--border-color);
+            padding: 25px; border-radius: 12px; width: 340px; box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
         }
         .auth-title {
             text-align: center; margin-bottom: 20px; font-size: 22px; font-weight: bold;
-            color: #ff4444; text-shadow: 0 0 5px #ff0000;
+            color: #ff3333; text-shadow: 0 0 8px #ff0000;
         }
         .input-group { margin-bottom: 12px; }
         .input-group label { display: block; margin-bottom: 4px; font-size: 12px; color: #ffaaaa; }
@@ -62,7 +61,7 @@
         .auth-links { margin-top: 12px; text-align: center; font-size: 12px; }
         .auth-links a { color: #ff6666; text-decoration: none; display: block; margin-top: 4px; cursor: pointer; }
 
-        /* ヘッダー */
+        /* メインアプリ構造 */
         #app-wrapper { display: none; }
         header {
             display: flex; justify-content: space-between; align-items: center; padding: 10px 20px;
@@ -91,7 +90,7 @@
         .main-content { padding: 20px; transition: margin-left 0.3s ease; }
         .main-content.shifted { margin-left: var(--sidebar-width); }
 
-        /* 動画表示・カード */
+        /* カード・グリッド */
         .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 15px; }
         .video-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; cursor: pointer; }
         .video-card img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
@@ -111,9 +110,9 @@
 </head>
 <body>
 
-<!-- 認証画面 & プランA -->
+<!-- 認証画面 (ログイン / 新規作成 / パスワードをお忘れの方) -->
 <div class="auth-container" id="authSection">
-    <!-- 通常ログイン -->
+    <!-- ログインフォーム -->
     <div class="auth-box" id="loginForm">
         <div class="auth-title">yuto-tube</div>
         <div class="input-group"><label>アカウント名</label><input type="text" id="loginUser"></div>
@@ -121,14 +120,14 @@
             <label>PIN</label>
             <div class="password-wrapper">
                 <input type="password" id="loginPin">
-                <span class="toggle-password" onclick="togglePassView('loginPin')">表示</span>
+                <span class="toggle-password" id="btn-toggle-loginPin" onclick="togglePassView('loginPin')">表示</span>
             </div>
         </div>
         <div class="input-group">
             <label>パスワード</label>
             <div class="password-wrapper">
                 <input type="password" id="loginPass">
-                <span class="toggle-password" onclick="togglePassView('loginPass')">表示</span>
+                <span class="toggle-password" id="btn-toggle-loginPass" onclick="togglePassView('loginPass')">表示</span>
             </div>
         </div>
 
@@ -136,45 +135,56 @@
         <div class="error-msg" id="loginError"></div>
 
         <div class="auth-links">
-            <a onclick="switchAuthView('planA')">パスワードをお忘れの方 (プランA)</a>
+            <a onclick="switchAuthView('forgot')">パスワードをお忘れの方</a>
             <a onclick="switchAuthView('register')">新規アカウント作成</a>
         </div>
     </div>
 
-    <!-- 新規作成 -->
+    <!-- 新規作成フォーム (パスワード設定欄追加) -->
     <div class="auth-box" id="registerForm" style="display: none;">
         <div class="auth-title">新規作成</div>
-        <div class="input-group"><label>アカウント名</label><input type="text" id="regUser" oninput="checkUserExists()"><div class="error-msg" id="userExistsError">他の人が使っているため使用不可</div></div>
+        <div class="input-group">
+            <label>アカウント名</label>
+            <input type="text" id="regUser" oninput="checkUserExists()">
+            <div class="error-msg" id="userExistsError">他の人が使っているため使用不可</div>
+        </div>
         <div class="input-group"><label>メールアドレス</label><input type="email" id="regEmail"></div>
         <div class="input-group">
             <label>PIN</label>
             <div class="password-wrapper">
                 <input type="password" id="regPin">
-                <span class="toggle-password" onclick="togglePassView('regPin')">表示</span>
+                <span class="toggle-password" id="btn-toggle-regPin" onclick="togglePassView('regPin')">表示</span>
             </div>
         </div>
-        <button class="btn-custom" onclick="handleRegister()">登録作成</button>
+        <div class="input-group">
+            <label>パスワード</label>
+            <div class="password-wrapper">
+                <input type="password" id="regPass">
+                <span class="toggle-password" id="btn-toggle-regPass" onclick="togglePassView('regPass')">表示</span>
+            </div>
+        </div>
+        <button class="btn-custom" onclick="handleRegister()">登録してログイン</button>
         <div class="auth-links"><a onclick="switchAuthView('login')">ログインへ戻る</a></div>
     </div>
 
-    <!-- プランA (パスワードをお忘れの方) -->
-    <div class="auth-box" id="planAForm" style="display: none;">
-        <div class="auth-title">プランA（再設定）</div>
-        <div class="input-group"><label>登録メールアドレス</label><input type="email" id="planEmail"></div>
+    <!-- パスワードをお忘れの方フォーム (「プランA」の文字削除) -->
+    <div class="auth-box" id="forgotForm" style="display: none;">
+        <div class="auth-title">パスワード再設定</div>
+        <div class="input-group"><label>登録メールアドレス</label><input type="email" id="forgotEmail"></div>
         <div class="input-group">
             <label>希望する手続き</label>
-            <select id="planOption" class="btn-custom" style="text-align: left;">
+            <select id="forgotOption" class="btn-custom" style="text-align: left;">
                 <option value="申請">パスワード変更申請</option>
                 <option value="確認コード">確認コード送信</option>
                 <option value="リセット">パスワードリセット (一時的に「0」になる)</option>
             </select>
         </div>
-        <button class="btn-custom" onclick="executePlanA()">実行</button>
+        <button class="btn-custom" onclick="executeForgot()">実行</button>
         <div class="auth-links"><a onclick="switchAuthView('login')">ログインへ戻る</a></div>
     </div>
 </div>
 
-<!-- メインアプリ -->
+<!-- メインアプリ構造 -->
 <div id="app-wrapper">
     <header>
         <div class="header-left">
@@ -234,9 +244,7 @@
 
 <script>
     let currentUserData = null;
-    let isGASVersion = false; // GAS版かRender版かの自動判別
 
-    // 登録アカウント初期データ
     function getAccounts() {
         const acc = localStorage.getItem('yuto_tube_accounts');
         return acc ? JSON.parse(acc) : [
@@ -246,7 +254,6 @@
     }
     function saveAccounts(acc) { localStorage.setItem('yuto_tube_accounts', JSON.stringify(acc)); }
 
-    // お知らせ投稿データ
     function getAnnouncements() {
         const ann = localStorage.getItem('yuto_tube_announcements');
         return ann ? JSON.parse(ann) : [
@@ -259,9 +266,7 @@
         updateClock();
         setInterval(updateClock, 1000);
 
-        // GAS版ヘッダータイトルの切替判定
         if (window.location.hostname.includes("google") || window.location.href.includes("exec")) {
-            isGASVersion = true;
             document.getElementById('appLogoTitle').textContent = "yuto-tube GAS版 v14.26.8.1.01";
         }
 
@@ -282,9 +287,17 @@
         document.getElementById('clock').textContent = hours + ':' + minutes + ' ' + ampm;
     }
 
+    // パスワード表示切替 (表示 ➔ 非表示 テキスト変更対応)
     function togglePassView(id) {
         const elem = document.getElementById(id);
-        elem.type = elem.type === 'password' ? 'text' : 'password';
+        const btn = document.getElementById('btn-toggle-' + id);
+        if (elem.type === 'password') {
+            elem.type = 'text';
+            if (btn) btn.textContent = '非表示';
+        } else {
+            elem.type = 'password';
+            if (btn) btn.textContent = '表示';
+        }
     }
 
     function toggleSidebar() {
@@ -302,7 +315,6 @@
         document.getElementById('mainContent').classList.remove('shifted');
     }
 
-    // 動画取得
     function loadVideos(title, query) {
         const container = document.getElementById('viewContainer');
         container.innerHTML = `<h2>${title}</h2><p style="color:#ff8888;">動画を取得中...</p>`;
@@ -342,7 +354,6 @@
         `;
     }
 
-    // ショート動画 (縦スクロールモード)
     function renderShortsView() {
         const container = document.getElementById('viewContainer');
         container.innerHTML = `
@@ -359,7 +370,6 @@
         closeSidebar();
     }
 
-    // ナビゲーション
     function navigateTool(tool) {
         const container = document.getElementById('viewContainer');
         if (tool === 'settings') container.innerHTML = renderSettingsPage();
@@ -371,13 +381,11 @@
         closeSidebar();
     }
 
-    // 開発者・管理者のお知らせ
     function renderNewsBoardPage() {
         const annList = getAnnouncements();
         const canPost = currentUserData.role === '管理者' || currentUserData.role === '開発者';
 
         let html = `<h2>開発者・管理者のお知らせ</h2>`;
-
         if (canPost) {
             html += `
                 <div class="settings-card">
@@ -438,7 +446,6 @@
         navigateTool('newsBoard');
     }
 
-    // 登録チャンネルページ
     function renderSubscriptionsPage() {
         return `
             <h2>登録チャンネル</h2>
@@ -450,7 +457,6 @@
         `;
     }
 
-    // 設定ページ（アカウント変更制限30日等含む）
     function renderSettingsPage() {
         return `
             <h2>設定</h2>
@@ -478,12 +484,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="settings-card">
-                <h3>動画取得方法テスト</h3>
-                <div class="player-box" style="height:150px; margin-bottom:10px;"><iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ"></iframe></div>
-                <button class="btn-custom" onclick="alert('取得テスト成功: この設定を保存しました')">動作成功・取得方法決定</button>
-            </div>
         `;
     }
 
@@ -506,7 +506,7 @@
         const newName = prompt("新しいアカウント名を入力してください:");
         if (newName) {
             user.username = newName;
-            user.lockUntil = now + (30 * 24 * 60 * 60 * 1000); // 30日固定ロック
+            user.lockUntil = now + (30 * 24 * 60 * 60 * 1000);
             saveAccounts(accounts);
             currentUserData.username = newName;
             localStorage.setItem('yuto_tube_user', JSON.stringify(currentUserData));
@@ -515,7 +515,6 @@
         }
     }
 
-    // 管理者権限 ＆ 利用ロググラフ
     function renderAdminPage() {
         const accounts = getAccounts();
         return `
@@ -526,15 +525,9 @@
                     ${accounts.map(a => `<li>${a.username} (${a.email}) [${a.role}] <button class="btn-custom" style="padding:2px 4px;" onclick="alert('${a.username} をBANしました')">BAN</button></li>`).join('')}
                 </ul>
             </div>
-
-            <div class="settings-card">
-                <h3>利用ログ (動画視聴数 & 起動回数)</h3>
-                <canvas id="logChart" style="max-height:200px;"></canvas>
-            </div>
         `;
     }
 
-    // その他のツール
     function renderToolsPage() {
         return `
             <h2>その他のツール</h2>
@@ -543,18 +536,9 @@
                 <a href="/lite.html" download="yuto-tube-lite.html" class="btn-custom" style="display:inline-block; text-decoration:none;">完全HTML版ダウンロード</a>
             </div>
             <div class="settings-card">
-                <h3>コードエディタ (HTML/CSS/JS試行・ドロップ編集)</h3>
+                <h3>コードエディタ (HTML/CSS/JS試行)</h3>
                 <textarea class="editor-textarea" placeholder="ここにコードを入力..."></textarea>
                 <button class="btn-custom" style="margin-top:8px;" onclick="alert('試行実行')">ブラウザで試行</button>
-            </div>
-            <div class="settings-card">
-                <h3>メモ (.txt, .html, .pdf出力)</h3>
-                <textarea class="editor-textarea" placeholder="メモ..."></textarea>
-                <div style="margin-top:8px; display:flex; gap:6px;">
-                    <button class="btn-custom" onclick="alert('.txt保存')">.txt保存</button>
-                    <button class="btn-custom" onclick="alert('.html保存')">.html保存</button>
-                    <button class="btn-custom" onclick="alert('.pdf保存')">.pdf保存</button>
-                </div>
             </div>
         `;
     }
@@ -566,12 +550,12 @@
     function switchAuthView(view) {
         document.getElementById('loginForm').style.display = view === 'login' ? 'block' : 'none';
         document.getElementById('registerForm').style.display = view === 'register' ? 'block' : 'none';
-        document.getElementById('planAForm').style.display = view === 'planA' ? 'block' : 'none';
+        document.getElementById('forgotForm').style.display = view === 'forgot' ? 'block' : 'none';
     }
 
-    function executePlanA() {
-        const option = document.getElementById('planOption').value;
-        const email = document.getElementById('planEmail').value;
+    function executeForgot() {
+        const option = document.getElementById('forgotOption').value;
+        const email = document.getElementById('forgotEmail').value;
         if (!email) return alert("メールアドレスを入力してください");
 
         if (option === 'リセット') {
@@ -583,7 +567,7 @@
                 alert("パスワードを「0」にリセットしました。パスワード「0」でログインしてください。");
             } else alert("該当するメールアドレスが見つかりません");
         } else {
-            alert(`プランA [${option}] のメールを ${email} に送信しました。`);
+            alert(`手続き [${option}] の案内を ${email} に送信しました。`);
         }
         switchAuthView('login');
     }
@@ -615,20 +599,27 @@
         showMainApp(currentUserData);
     }
 
+    // 新規登録処理（パスワード保持 ＆ そのまま即ログイン）
     function handleRegister() {
         const name = document.getElementById('regUser').value.trim();
         const email = document.getElementById('regEmail').value.trim();
         const pin = document.getElementById('regPin').value;
+        const pass = document.getElementById('regPass').value;
 
-        if (!name || !pin || !email) return alert("全項目を入力してください");
+        if (!name || !pin || !pass || !email) return alert("すべての項目を入力してください");
         if (checkUserExists()) return alert("このアカウント名は使用できません");
 
+        const newAcc = { username: name, pin, pass, email, role: "一般利用者", lockUntil: 0 };
         const accounts = getAccounts();
-        accounts.push({ username: name, pin, pass: pin, email, role: "一般利用者", lockUntil: 0 });
+        accounts.push(newAcc);
         saveAccounts(accounts);
 
-        alert("アカウントを作成しました！");
-        switchAuthView('login');
+        // 新規作成完了後、そのままローカルストレージに保持して即時ログイン状態に移行
+        currentUserData = { username: newAcc.username, role: newAcc.role };
+        localStorage.setItem('yuto_tube_user', JSON.stringify(currentUserData));
+
+        alert("アカウントを作成しました！そのままログインしてサービスを利用します。");
+        showMainApp(currentUserData);
     }
 
     function showMainApp(userData) {
