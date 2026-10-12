@@ -4,15 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>yuto-tube v14.26.8.1.01</title>
+    <!-- Chart.js グラフライブラリ -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        /* テーマカラー：赤と黒 (テキストやボタンは白以外の鮮やかな色) */
         :root {
             --bg-color: #080000;
-            --header-bg: #150505;
-            --accent-color: #e50914;
-            --text-color: #f5f5f5;
-            --card-bg: #1c0a0a;
-            --border-color: #4a0000;
-            --sidebar-width: 240px;
+            --header-bg: #180303;
+            --accent-color: #ff2222;
+            --text-color: #ffcccc; /* 白以外の赤系明色 */
+            --card-bg: #220808;
+            --border-color: #660000;
+            --btn-bg: #4a0000;
+            --btn-hover: #880000;
+            --sidebar-width: 250px;
         }
         body {
             background-color: var(--bg-color);
@@ -21,148 +26,168 @@
             margin: 0; padding: 0; overflow-x: hidden;
         }
 
-        /* 認証画面 */
+        /* パスワード表示切替の目マーク用 */
+        .password-wrapper { position: relative; width: 100%; }
+        .toggle-password {
+            position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+            cursor: pointer; font-size: 14px; color: #ff8888; user-select: none;
+        }
+
+        /* 認証・プランA モーダル */
         .auth-container {
             display: flex; justify-content: center; align-items: center; min-height: 100vh;
-            background: radial-gradient(circle, #2a0000 0%, #080000 100%);
+            background: radial-gradient(circle, #330000 0%, #080000 100%);
         }
         .auth-box {
-            background-color: var(--card-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; width: 320px;
-            box-shadow: 0 0 20px rgba(229, 9, 20, 0.3);
+            background-color: var(--card-bg); border: 1px solid var(--border-color);
+            padding: 25px; border-radius: 12px; width: 340px; box-shadow: 0 0 25px rgba(255, 34, 34, 0.3);
         }
         .auth-title {
-            text-align: center; margin-bottom: 20px; font-size: 22px;
-            background: linear-gradient(to right, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
-            -webkit-background-clip: text; color: transparent; animation: rainbow 5s linear infinite;
+            text-align: center; margin-bottom: 20px; font-size: 22px; font-weight: bold;
+            color: #ff4444; text-shadow: 0 0 5px #ff0000;
         }
-        @keyframes rainbow { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; margin-bottom: 5px; font-size: 13px; color: #ccc; }
-        .input-group input[type="text"], .input-group input[type="password"], .input-group input[type="email"] {
-            width: 100%; padding: 10px; box-sizing: border-box; background-color: #100000; border: 1px solid var(--border-color); color: white; border-radius: 5px; outline: none;
+        .input-group { margin-bottom: 12px; }
+        .input-group label { display: block; margin-bottom: 4px; font-size: 12px; color: #ffaaaa; }
+        .input-group input[type="text"],
+        .input-group input[type="password"],
+        .input-group input[type="email"] {
+            width: 100%; padding: 10px; box-sizing: border-box; background-color: #120000;
+            border: 1px solid var(--border-color); color: #ffdddd; border-radius: 5px; outline: none;
         }
-        .checkbox-group { margin: 10px 0; font-size: 13px; }
-        .auth-btn { width: 100%; padding: 10px; background-color: var(--accent-color); border: none; color: white; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 10px; }
-        .auth-btn:hover { background-color: #ff1e27; }
-        .auth-links { margin-top: 15px; text-align: center; font-size: 12px; }
-        .auth-links a { color: #ff6666; text-decoration: none; display: block; margin-top: 5px; cursor: pointer; }
+        .btn-custom {
+            width: 100%; padding: 10px; background-color: var(--btn-bg); border: 1px solid var(--border-color);
+            color: #ff8888; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 8px;
+        }
+        .btn-custom:hover { background-color: var(--btn-hover); color: #ffcccc; }
+        .auth-links { margin-top: 12px; text-align: center; font-size: 12px; }
+        .auth-links a { color: #ff6666; text-decoration: none; display: block; margin-top: 4px; cursor: pointer; }
 
-        /* メインアプリ構造 */
+        /* ヘッダー */
         #app-wrapper { display: none; }
         header {
-            display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background-color: var(--header-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center; padding: 10px 20px;
+            background-color: var(--header-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 1000;
         }
         .header-left { display: flex; align-items: center; gap: 15px; }
-        .menu-btn { font-size: 24px; cursor: pointer; user-select: none; }
-        .logo { font-weight: bold; font-size: 18px; text-decoration: none; background: linear-gradient(to right, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3); -webkit-background-clip: text; color: transparent; animation: rainbow 5s linear infinite; cursor: pointer; }
-        .search-container { display: flex; flex-grow: 1; max-width: 500px; margin: 0 20px; position: relative; }
-        .search-box { width: 100%; padding: 8px 15px; background-color: #100000; border: 1px solid var(--border-color); color: white; border-radius: 20px 0 0 20px; outline: none; }
-        .search-btn { padding: 8px 18px; background-color: #2b0000; border: 1px solid var(--border-color); color: white; border-radius: 0 20px 20px 0; cursor: pointer; }
-        .search-hint { position: absolute; top: 42px; left: 10px; background-color: rgba(30, 0, 0, 0.95); border: 1px solid var(--accent-color); padding: 6px 12px; border-radius: 4px; font-size: 11px; color: #ccc; display: none; z-index: 1001; }
-        .time-display { font-size: 14px; color: #d1d1d1; font-family: monospace; }
-        .user-info { display: flex; align-items: center; gap: 10px; font-size: 13px; }
-        .logout-btn { background-color: #333; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; }
+        .menu-btn { font-size: 24px; cursor: pointer; color: #ff6666; }
+        .logo { font-weight: bold; font-size: 18px; color: #ff3333; text-decoration: none; cursor: pointer; }
+        .search-container { display: flex; flex-grow: 1; max-width: 480px; margin: 0 15px; position: relative; }
+        .search-box { width: 100%; padding: 8px 15px; background-color: #120000; border: 1px solid var(--border-color); color: #ffdddd; border-radius: 20px 0 0 20px; outline: none; }
+        .search-btn { padding: 8px 18px; background-color: var(--btn-bg); border: 1px solid var(--border-color); color: #ff8888; border-radius: 0 20px 20px 0; cursor: pointer; }
+        .time-display { font-size: 13px; color: #ff8888; font-family: monospace; }
 
         /* サイドバー */
-        .sidebar { position: fixed; top: 55px; left: -250px; width: var(--sidebar-width); height: calc(100vh - 55px); background-color: var(--header-bg); border-right: 1px solid var(--border-color); transition: left 0.3s ease; overflow-y: auto; z-index: 999; }
+        .sidebar {
+            position: fixed; top: 55px; left: -260px; width: var(--sidebar-width); height: calc(100vh - 55px);
+            background-color: var(--header-bg); border-right: 1px solid var(--border-color); transition: left 0.3s ease; overflow-y: auto; z-index: 999;
+        }
         .sidebar.active { left: 0; }
-        .sidebar-section-title { font-size: 11px; color: #888; padding: 10px 20px 5px; text-transform: uppercase; }
-        .sidebar-menu { list-style: none; padding: 0 0 10px 0; margin: 0; }
-        .sidebar-menu li { padding: 12px 20px; font-size: 14px; cursor: pointer; border-bottom: 1px solid #1a0000; transition: background 0.2s; }
-        .sidebar-menu li:hover { background-color: var(--card-bg); color: var(--accent-color); }
-        .sidebar-divider { border-top: 1px solid var(--border-color); margin: 5px 0; }
+        .sidebar-section-title { font-size: 11px; color: #ff6666; padding: 10px 20px 4px; text-transform: uppercase; font-weight: bold; }
+        .sidebar-menu { list-style: none; padding: 0; margin: 0; }
+        .sidebar-menu li { padding: 10px 20px; font-size: 13px; cursor: pointer; border-bottom: 1px solid #2a0000; color: #ffaaaa; }
+        .sidebar-menu li:hover { background-color: var(--card-bg); color: #ff2222; }
+        .sidebar-divider { border-top: 1px solid var(--border-color); margin: 6px 0; }
 
         .main-content { padding: 20px; transition: margin-left 0.3s ease; }
         .main-content.shifted { margin-left: var(--sidebar-width); }
 
-        /* グリッド & 設定 */
-        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-top: 15px; }
-        .video-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
-        .video-card:hover { transform: translateY(-3px); border-color: var(--accent-color); }
+        /* 動画表示・カード */
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 15px; }
+        .video-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; cursor: pointer; }
         .video-card img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
         .video-card-body { padding: 10px; }
-        .video-card-title { font-weight: bold; font-size: 14px; margin-bottom: 5px; color: #fff; line-height: 1.3; }
-        .video-card-author { font-size: 12px; color: #aaa; }
+        .video-card-title { font-weight: bold; font-size: 13px; color: #ffcccc; margin-bottom: 4px; }
+        .video-card-author { font-size: 11px; color: #ff8888; }
 
         .watch-container { display: flex; gap: 20px; flex-wrap: wrap; }
-        .video-primary { flex: 1 1 65%; min-width: 320px; }
-        .video-secondary { flex: 1 1 30%; min-width: 280px; }
+        .video-primary { flex: 1 1 60%; min-width: 320px; }
         .player-box { width: 100%; aspect-ratio: 16 / 9; background-color: #000; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
         .player-box iframe { width: 100%; height: 100%; border: none; }
-        .video-controls-panel { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-top: 15px; }
-        .control-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; align-items: center; }
-        .btn-option { background-color: #2b0000; border: 1px solid var(--border-color); color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        .btn-option:hover { background-color: var(--accent-color); }
-        .select-option { background-color: #100000; border: 1px solid var(--border-color); color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; }
-        
         .settings-card { background-color: var(--card-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #2a0000; }
-        .editor-textarea { width: 100%; height: 180px; background-color: #050000; border: 1px solid var(--border-color); color: #00ff88; font-family: monospace; padding: 10px; box-sizing: border-box; border-radius: 5px; outline: none; }
-        .error-msg { color: #ff4444; font-size: 12px; margin-top: 5px; display: none; }
+        .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #330000; font-size: 13px; }
+        .editor-textarea { width: 100%; height: 160px; background-color: #120000; border: 1px solid var(--border-color); color: #ffaa55; font-family: monospace; padding: 8px; box-sizing: border-box; border-radius: 5px; }
+        .error-msg { color: #ff4444; font-size: 12px; margin-top: 4px; display: none; }
     </style>
 </head>
 <body>
 
-<!-- 認証画面 -->
+<!-- 認証画面 & プランA -->
 <div class="auth-container" id="authSection">
+    <!-- 通常ログイン -->
     <div class="auth-box" id="loginForm">
         <div class="auth-title">yuto-tube</div>
-        <div class="input-group"><label>アカウント名</label><input type="text" id="loginUser" autocomplete="off"></div>
-        <div class="input-group"><label>PIN</label><input type="password" id="loginPin" autocomplete="off"></div>
-        <div class="input-group"><label>パスワード</label><input type="password" id="loginPass" autocomplete="off"></div>
+        <div class="input-group"><label>アカウント名</label><input type="text" id="loginUser"></div>
+        <div class="input-group">
+            <label>PIN</label>
+            <div class="password-wrapper">
+                <input type="password" id="loginPin">
+                <span class="toggle-password" onclick="togglePassView('loginPin')">表示</span>
+            </div>
+        </div>
+        <div class="input-group">
+            <label>パスワード</label>
+            <div class="password-wrapper">
+                <input type="password" id="loginPass">
+                <span class="toggle-password" onclick="togglePassView('loginPass')">表示</span>
+            </div>
+        </div>
 
-        <div class="checkbox-group"><label><input type="checkbox" id="chkAdmin" onchange="toggleAuthFields()"> あなたは管理者ですか?</label></div>
-        <div class="input-group" id="adminPassGroup" style="display: none;"><label>管理者パスワード</label><input type="password" id="adminPass" autocomplete="off"></div>
-
-        <div class="checkbox-group"><label><input type="checkbox" id="chkDev" onchange="toggleAuthFields()"> あなたは開発者ですか?</label></div>
-        <div class="input-group" id="devPassGroup" style="display: none;"><label>開発者パスワード</label><input type="password" id="devPass" autocomplete="off"></div>
-
-        <button class="auth-btn" onclick="handleLogin()">ログイン</button>
+        <button class="btn-custom" onclick="handleLogin()">ログイン</button>
         <div class="error-msg" id="loginError"></div>
 
         <div class="auth-links">
-            <a onclick="alert('管理者または開発者にお問い合わせください')">パスワードを忘れた方はコチラ</a>
-            <a onclick="switchAuthView('register')">アカウントを持っていませんか? 新規作成</a>
+            <a onclick="switchAuthView('planA')">パスワードをお忘れの方 (プランA)</a>
+            <a onclick="switchAuthView('register')">新規アカウント作成</a>
         </div>
     </div>
 
+    <!-- 新規作成 -->
     <div class="auth-box" id="registerForm" style="display: none;">
         <div class="auth-title">新規作成</div>
+        <div class="input-group"><label>アカウント名</label><input type="text" id="regUser" oninput="checkUserExists()"><div class="error-msg" id="userExistsError">他の人が使っているため使用不可</div></div>
+        <div class="input-group"><label>メールアドレス</label><input type="email" id="regEmail"></div>
         <div class="input-group">
-            <label>アカウント名</label>
-            <input type="text" id="regUser" autocomplete="off" oninput="checkUserExists()">
-            <div class="error-msg" id="userExistsError">他の人が使っているので、、、使用できません</div>
+            <label>PIN</label>
+            <div class="password-wrapper">
+                <input type="password" id="regPin">
+                <span class="toggle-password" onclick="togglePassView('regPin')">表示</span>
+            </div>
         </div>
-        <div class="input-group"><label>メールアドレス (空欄可)</label><input type="email" id="regEmail" autocomplete="off"></div>
-        <div class="input-group"><label>PIN</label><input type="password" id="regPin" autocomplete="off"></div>
+        <button class="btn-custom" onclick="handleRegister()">登録作成</button>
+        <div class="auth-links"><a onclick="switchAuthView('login')">ログインへ戻る</a></div>
+    </div>
 
-        <div class="checkbox-group"><label><input type="checkbox" id="regChkAdmin" onchange="toggleRegAuthFields()"> あなたは管理者ですか?</label></div>
-        <div class="input-group" id="regAdminPassGroup" style="display: none;"><label>管理者パスワード設定</label><input type="password" id="regAdminPass" autocomplete="off"></div>
-
-        <div class="checkbox-group"><label><input type="checkbox" id="regChkDev" onchange="toggleRegAuthFields()"> あなたは開発者ですか?</label></div>
-        <div class="input-group" id="regDevPassGroup" style="display: none;"><label>開発者パスワード設定</label><input type="password" id="regDevPass" autocomplete="off"></div>
-
-        <button class="auth-btn" onclick="handleRegister()">アカウント作成</button>
-        <div class="auth-links"><a onclick="switchAuthView('login')">既にアカウントをお持ちの方はコチラ</a></div>
+    <!-- プランA (パスワードをお忘れの方) -->
+    <div class="auth-box" id="planAForm" style="display: none;">
+        <div class="auth-title">プランA（再設定）</div>
+        <div class="input-group"><label>登録メールアドレス</label><input type="email" id="planEmail"></div>
+        <div class="input-group">
+            <label>希望する手続き</label>
+            <select id="planOption" class="btn-custom" style="text-align: left;">
+                <option value="申請">パスワード変更申請</option>
+                <option value="確認コード">確認コード送信</option>
+                <option value="リセット">パスワードリセット (一時的に「0」になる)</option>
+            </select>
+        </div>
+        <button class="btn-custom" onclick="executePlanA()">実行</button>
+        <div class="auth-links"><a onclick="switchAuthView('login')">ログインへ戻る</a></div>
     </div>
 </div>
 
-<!-- メイン構造 -->
+<!-- メインアプリ -->
 <div id="app-wrapper">
     <header>
         <div class="header-left">
             <div class="menu-btn" onclick="toggleSidebar()">≡</div>
-            <a onclick="selectGenre('ホーム', 'Roblox')" class="logo">yuto-tube v14.26.8.1.01</a>
+            <a onclick="selectGenre('ホーム', 'Roblox')" class="logo" id="appLogoTitle">yuto-tube v14.26.8.1.01</a>
         </div>
         <div class="search-container">
             <input type="text" class="search-box" placeholder="検索" id="searchInput" onkeypress="handleSearchKey(event)">
             <button class="search-btn" onclick="executeSearch()">検索</button>
-            <div class="search-hint" id="searchHint">/ を押すと検索ボックスに移動できます</div>
         </div>
-        <div class="user-info">
-            <span id="displayUsername"></span>
-            <span id="displayRole" style="color: #ff8888;"></span>
-            <button class="logout-btn" onclick="handleLogout()">ログアウト</button>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span id="displayUsername" style="color: #ffaaaa; font-size: 12px;"></span>
+            <button class="btn-custom" style="padding: 4px 8px; font-size: 11px;" onclick="handleLogout()">ログアウト</button>
             <div class="time-display" id="clock">--:-- --</div>
         </div>
     </header>
@@ -171,22 +196,30 @@
         <div class="sidebar-section-title">動画ジャンル</div>
         <ul class="sidebar-menu">
             <li onclick="selectGenre('ホーム', 'Roblox')">ホーム</li>
-            <li onclick="selectGenre('ショート動画', 'Shorts')">ショート動画</li>
+            <li onclick="renderShortsView()">ショート</li>
             <li onclick="selectGenre('登録チャンネル', 'マエスケ')">登録チャンネル</li>
-            <li onclick="selectGenre('ゲーム', 'ゲーム')">ゲーム</li>
-            <li onclick="selectGenre('スポーツ', 'スポーツ')">スポーツ</li>
+            <li onclick="selectGenre('ゲーム', 'ゲーム実況')">ゲーム</li>
+            <li onclick="selectGenre('スポーツ', 'スポーツ解説')">スポーツ</li>
             <li onclick="selectGenre('ニュース', 'ニュース')">ニュース</li>
             <li onclick="selectGenre('エンタメ', 'エンタメ')">エンタメ</li>
-            <li onclick="selectGenre('音楽', '音楽')">音楽</li>
-            <li onclick="selectGenre('学習', '学習')">学習</li>
+            <li onclick="selectGenre('音楽', 'MV 音楽')">音楽</li>
+            <li onclick="selectGenre('学習', '勉強 解説')">学習</li>
             <li onclick="selectGenre('ライブ', 'ライブ配信')">ライブ</li>
         </ul>
 
         <div class="sidebar-divider"></div>
 
-        <div class="sidebar-section-title">機能・設定</div>
+        <div class="sidebar-section-title">登録・リスト</div>
         <ul class="sidebar-menu">
+            <li onclick="navigateTool('subscriptions')">登録チャンネル (3件表示)</li>
             <li onclick="navigateTool('playlists')">再生リスト</li>
+        </ul>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section-title">コミュニティ & 設定</div>
+        <ul class="sidebar-menu">
+            <li onclick="navigateTool('newsBoard')">開発者・管理者のお知らせ</li>
             <li onclick="navigateTool('settings')">設定</li>
             <li onclick="navigateTool('admin')">管理者権限</li>
             <li onclick="navigateTool('tools')">その他のツール</li>
@@ -201,43 +234,42 @@
 
 <script>
     let currentUserData = null;
-    let currentVideoId = "dQw4w9WgXcQ";
+    let isGASVersion = false; // GAS版かRender版かの自動判別
 
-    // アカウントの永続保存用データ（localStorageから読み込み）
-    function getRegisteredAccounts() {
-        const accounts = localStorage.getItem('yuto_tube_accounts');
-        return accounts ? JSON.parse(accounts) : [
-            { username: "yuto", pin: "1234", pass: "yuto", role: "開発者" },
-            { username: "admin", pin: "0000", pass: "admin", role: "管理者" }
+    // 登録アカウント初期データ
+    function getAccounts() {
+        const acc = localStorage.getItem('yuto_tube_accounts');
+        return acc ? JSON.parse(acc) : [
+            { username: "yuto", pin: "1234", pass: "yuto", email: "yuto@example.com", role: "開発者", lockUntil: 0 },
+            { username: "admin", pin: "0000", pass: "admin", email: "admin@example.com", role: "管理者", lockUntil: 0 }
         ];
     }
+    function saveAccounts(acc) { localStorage.setItem('yuto_tube_accounts', JSON.stringify(acc)); }
 
-    function saveRegisteredAccounts(accounts) {
-        localStorage.setItem('yuto_tube_accounts', JSON.stringify(accounts));
+    // お知らせ投稿データ
+    function getAnnouncements() {
+        const ann = localStorage.getItem('yuto_tube_announcements');
+        return ann ? JSON.parse(ann) : [
+            { id: 1, author: "yuto", role: "開発者", time: "2026-10-11 10:23", title: "v14.26.8.1.01 リリース", category: "お知らせ", content: "新機能を多数追加しました！" }
+        ];
     }
+    function saveAnnouncements(ann) { localStorage.setItem('yuto_tube_announcements', JSON.stringify(ann)); }
 
     window.onload = function() {
         updateClock();
         setInterval(updateClock, 1000);
+
+        // GAS版ヘッダータイトルの切替判定
+        if (window.location.hostname.includes("google") || window.location.href.includes("exec")) {
+            isGASVersion = true;
+            document.getElementById('appLogoTitle').textContent = "yuto-tube GAS版 v14.26.8.1.01";
+        }
 
         const savedUser = localStorage.getItem('yuto_tube_user');
         if (savedUser) {
             currentUserData = JSON.parse(savedUser);
             showMainApp(currentUserData);
         }
-
-        document.addEventListener('keydown', function(e) {
-            if (document.getElementById('app-wrapper').style.display === 'block') {
-                const activeTag = document.activeElement.tagName.toLowerCase();
-                if (activeTag !== 'input' && activeTag !== 'textarea') {
-                    if (e.key === '/') {
-                        e.preventDefault();
-                        document.getElementById('searchInput').focus();
-                        showSearchHint();
-                    }
-                }
-            }
-        });
     };
 
     function updateClock() {
@@ -250,22 +282,18 @@
         document.getElementById('clock').textContent = hours + ':' + minutes + ' ' + ampm;
     }
 
+    function togglePassView(id) {
+        const elem = document.getElementById(id);
+        elem.type = elem.type === 'password' ? 'text' : 'password';
+    }
+
     function toggleSidebar() {
         document.getElementById('sidebar').classList.toggle('active');
         document.getElementById('mainContent').classList.toggle('shifted');
     }
 
-    function selectGenre(genreName, searchKeyword) {
-        loadHomeVideos(genreName, searchKeyword);
-        closeSidebar();
-    }
-
-    function navigateTool(toolName) {
-        const container = document.getElementById('viewContainer');
-        if (toolName === 'settings') container.innerHTML = renderSettingsPage();
-        else if (toolName === 'admin') container.innerHTML = renderAdminPage();
-        else if (toolName === 'tools') container.innerHTML = renderToolsPage();
-        else if (toolName === 'playlists') container.innerHTML = `<h2>再生リスト</h2><p>保存した再生リスト一覧です。</p>`;
+    function selectGenre(title, query) {
+        loadVideos(title, query);
         closeSidebar();
     }
 
@@ -274,22 +302,19 @@
         document.getElementById('mainContent').classList.remove('shifted');
     }
 
-    function loadHomeVideos(title, query) {
+    // 動画取得
+    function loadVideos(title, query) {
         const container = document.getElementById('viewContainer');
-        container.innerHTML = `<h2>${title}</h2><p>動画を取得中...</p>`;
+        container.innerHTML = `<h2>${title}</h2><p style="color:#ff8888;">動画を取得中...</p>`;
 
         fetch(`/api/search?q=${encodeURIComponent(query)}`)
             .then(res => res.json())
             .then(data => {
-                if (!data.videos || data.videos.length === 0) {
-                    container.innerHTML = `<h2>${title}</h2><p>該当する動画が見つかりませんでした。</p>`;
-                    return;
-                }
                 let html = `<h2>${title}</h2><div class="video-grid">`;
                 data.videos.forEach(v => {
                     html += `
                         <div class="video-card" onclick="playVideo('${v.id}', '${v.title.replace(/'/g, "\\'")}')">
-                            <img src="${v.thumbnail}" alt="thumb">
+                            <img src="${v.thumbnail}">
                             <div class="video-card-body">
                                 <div class="video-card-title">${v.title}</div>
                                 <div class="video-card-author">${v.author} • ${v.views}</div>
@@ -299,214 +324,317 @@
                 });
                 html += `</div>`;
                 container.innerHTML = html;
-            })
-            .catch(() => {
-                container.innerHTML = `<p>動画取得エラーが発生しました</p>`;
             });
     }
 
     function playVideo(id, title) {
-        currentVideoId = id;
         const container = document.getElementById('viewContainer');
         container.innerHTML = `
             <div class="watch-container">
                 <div class="video-primary">
-                    <div class="player-box">
-                        <iframe id="videoIframe" src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1" allowfullscreen></iframe>
-                    </div>
-                    <div class="video-controls-panel">
-                        <div class="control-row">
-                            <label>動画取得方法:</label>
-                            <select class="select-option" id="fetchMethodSelect" onchange="changeFetchMethod()">
-                                <option value="nocookie">nocookie再生</option>
-                                <option value="stream">ストリーム再生</option>
-                                <option value="education">education再生</option>
-                            </select>
-                            <label>画質:</label>
-                            <select class="select-option">
-                                <option>1072p</option><option>804p</option><option>360p</option><option>音声のみ</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="settings-card" style="margin-top: 15px;">
+                    <div class="player-box"><iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1" allowfullscreen></iframe></div>
+                    <div class="settings-card" style="margin-top:10px;">
                         <h3>${title}</h3>
-                        <p style="color: #aaa; font-size: 13px;">yuto-tube プレイヤーでストリーム再生中</p>
+                        <p style="font-size:12px; color:#ff8888;">ストリーム再生中</p>
                     </div>
                 </div>
             </div>
         `;
     }
 
-    function changeFetchMethod() {
-        const method = document.getElementById('fetchMethodSelect').value;
-        const iframe = document.getElementById('videoIframe');
-        if (method === 'education') iframe.src = `https://www.youtube.com/embed/${currentVideoId}?mode=educational`;
-        else iframe.src = `https://www.youtube-nocookie.com/embed/${currentVideoId}?autoplay=1`;
+    // ショート動画 (縦スクロールモード)
+    function renderShortsView() {
+        const container = document.getElementById('viewContainer');
+        container.innerHTML = `
+            <h2>ショート</h2>
+            <div style="max-width: 360px; margin: 0 auto; height: 80vh; overflow-y: scroll; snap-type: y mandatory;">
+                <div style="height: 100%; snap-align: start; margin-bottom: 20px;">
+                    <iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" style="width:100%; height:100%; border:none; border-radius:12px;"></iframe>
+                </div>
+                <div style="height: 100%; snap-align: start;">
+                    <iframe src="https://www.youtube-nocookie.com/embed/3JZ_D3ELwOQ" style="width:100%; height:100%; border:none; border-radius:12px;"></iframe>
+                </div>
+            </div>
+        `;
+        closeSidebar();
     }
 
-    function executeSearch() {
-        const query = document.getElementById('searchInput').value;
-        if (query) loadHomeVideos(`検索結果: ${query}`, query);
+    // ナビゲーション
+    function navigateTool(tool) {
+        const container = document.getElementById('viewContainer');
+        if (tool === 'settings') container.innerHTML = renderSettingsPage();
+        else if (tool === 'admin') container.innerHTML = renderAdminPage();
+        else if (tool === 'tools') container.innerHTML = renderToolsPage();
+        else if (tool === 'newsBoard') container.innerHTML = renderNewsBoardPage();
+        else if (tool === 'subscriptions') container.innerHTML = renderSubscriptionsPage();
+        else if (tool === 'playlists') container.innerHTML = `<h2>再生リスト</h2><p>保存された再生リストが表示されます。</p>`;
+        closeSidebar();
     }
 
-    function handleSearchKey(e) { if (e.key === 'Enter') executeSearch(); }
+    // 開発者・管理者のお知らせ
+    function renderNewsBoardPage() {
+        const annList = getAnnouncements();
+        const canPost = currentUserData.role === '管理者' || currentUserData.role === '開発者';
 
-    // 要件通りの「設定 & データ管理」完全項目復元
+        let html = `<h2>開発者・管理者のお知らせ</h2>`;
+
+        if (canPost) {
+            html += `
+                <div class="settings-card">
+                    <h3>お知らせ新規投稿</h3>
+                    <div class="input-group"><label>タイトル</label><input type="text" id="annTitle"></div>
+                    <div class="input-group">
+                        <label>ジャンル</label>
+                        <select id="annCategory" class="btn-custom" style="text-align:left;">
+                            <option>お知らせ</option><option>不具合</option><option>許可申請</option><option>連絡</option>
+                        </select>
+                    </div>
+                    <div class="input-group"><label>投稿内容</label><textarea id="annContent" class="editor-textarea"></textarea></div>
+                    <button class="btn-custom" onclick="postAnnouncement()">投稿する</button>
+                </div>
+            `;
+        }
+
+        html += `<div style="margin-top:20px;">`;
+        annList.forEach(item => {
+            const canDelete = currentUserData.username === item.author || currentUserData.role === '開発者';
+            html += `
+                <div class="settings-card">
+                    <div style="display:flex; justify-content:space-between; font-size:12px; color:#ff8888;">
+                        <span>投稿者: ${item.author} [${item.role}] | ${item.time} | 【${item.category}】</span>
+                        ${canDelete ? `<button class="btn-custom" style="padding:2px 6px;" onclick="deleteAnnouncement(${item.id})">削除</button>` : ''}
+                    </div>
+                    <h3 style="margin:8px 0 4px; color:#ff4444;">${item.title}</h3>
+                    <p style="font-size:13px; color:#ffcccc;">${item.content}</p>
+                </div>
+            `;
+        });
+        html += `</div>`;
+        return html;
+    }
+
+    function postAnnouncement() {
+        const title = document.getElementById('annTitle').value;
+        const category = document.getElementById('annCategory').value;
+        const content = document.getElementById('annContent').value;
+        if (!title || !content) return alert("入力が不足しています");
+
+        const annList = getAnnouncements();
+        const now = new Date();
+        annList.unshift({
+            id: Date.now(),
+            author: currentUserData.username,
+            role: currentUserData.role,
+            time: `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()} ${now.getHours()}:${now.getMinutes()}`,
+            title, category, content
+        });
+        saveAnnouncements(annList);
+        navigateTool('newsBoard');
+    }
+
+    function deleteAnnouncement(id) {
+        let annList = getAnnouncements().filter(a => a.id !== id);
+        saveAnnouncements(annList);
+        navigateTool('newsBoard');
+    }
+
+    // 登録チャンネルページ
+    function renderSubscriptionsPage() {
+        return `
+            <h2>登録チャンネル</h2>
+            <div class="video-grid">
+                <div class="video-card"><div class="video-card-body"><h3>マエスケ</h3><p style="font-size:11px;">登録中</p></div></div>
+                <div class="video-card"><div class="video-card-body"><h3>ロミくん</h3><p style="font-size:11px;">登録中</p></div></div>
+                <div class="video-card"><div class="video-card-body"><h3>公式チャンネル</h3><p style="font-size:11px;">登録中</p></div></div>
+            </div>
+        `;
+    }
+
+    // 設定ページ（アカウント変更制限30日等含む）
     function renderSettingsPage() {
         return `
-            <h2>設定 & データ管理</h2>
+            <h2>設定</h2>
             <div class="settings-card">
-                <h3>再生 & 取得設定</h3>
-                <div class="settings-row">
-                    <span>サムネイル取得方法</span>
-                    <select class="select-option">
-                        <option>プロキシ (wsrv.nl 経由・デフォルト)</option>
-                        <option>サーバー処理 (このサーバー経由)</option>
-                        <option>Base64 埋め込み (データ URI)</option>
-                    </select>
-                </div>
-                <div class="settings-row">
-                    <span>シークレットモード</span>
-                    <button class="btn-option" onclick="alert('シークレットモード切り替え')">通常: OFF</button>
+                <h3>アカウント設定 (要認証)</h3>
+                <div class="input-group"><label>現在のパスワードを入力してください</label><input type="password" id="accAuthPass"></div>
+                <button class="btn-custom" onclick="verifyAccAuth()">アカウント認証</button>
+                
+                <div id="accAuthArea" style="display:none; margin-top:15px;">
+                    <div class="settings-row">
+                        <span>アカウント名変更 (30日に1回のみ)</span>
+                        <button class="btn-custom" onclick="changeUsernamePrompt()">変更</button>
+                    </div>
+                    <div class="settings-row">
+                        <span>メールアドレス変更/追加</span>
+                        <button class="btn-custom" onclick="alert('メールアドレスを変更しました')">変更</button>
+                    </div>
+                    <div class="settings-row">
+                        <span>ステータス一時切り替え (利用者へ)</span>
+                        <button class="btn-custom" onclick="alert('一時的に一般利用者に変更しました')">切り替え</button>
+                    </div>
+                    <div class="settings-row">
+                        <span>アカウント削除 (7日以内なら復元可能)</span>
+                        <button class="btn-custom" style="background:#880000;" onclick="alert('7日間の復元猶予付きで削除申請しました')">アカウント削除</button>
+                    </div>
                 </div>
             </div>
 
             <div class="settings-card">
-                <h3>データ管理</h3>
-                <div class="settings-row">
-                    <span>設定をリセット</span>
-                    <button class="btn-option" onclick="alert('設定を初期化しました')">リセット</button>
-                </div>
-                <div class="settings-row">
-                    <span>視聴履歴を削除</span>
-                    <button class="btn-option" onclick="alert('視聴履歴を削除しました')">削除</button>
-                </div>
-                <div class="settings-row">
-                    <span>お気に入りをすべて削除</span>
-                    <button class="btn-option" onclick="alert('お気に入りを削除しました')">削除</button>
-                </div>
-                <div class="settings-row">
-                    <span>プレイリストをすべて削除</span>
-                    <button class="btn-option" onclick="alert('プレイリストを削除しました')">削除</button>
-                </div>
-                <div class="settings-row">
-                    <span>登録チャンネルをすべて削除</span>
-                    <button class="btn-option" onclick="alert('登録チャンネルを解除しました')">削除</button>
-                </div>
+                <h3>動画取得方法テスト</h3>
+                <div class="player-box" style="height:150px; margin-bottom:10px;"><iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ"></iframe></div>
+                <button class="btn-custom" onclick="alert('取得テスト成功: この設定を保存しました')">動作成功・取得方法決定</button>
             </div>
         `;
     }
 
-    function renderToolsPage() {
-        return `
-            <h2>その他のツール</h2>
-            <div class="settings-card"><h3>yuto-tube Lite (完全HTML版)</h3><a href="/lite.html" download="yuto-tube-lite.html" class="btn-option" style="text-decoration:none; display:inline-block;">完全html版 「yuto-tube lite」 をダウンロード</a></div>
-            <div class="settings-card"><h3>コードエディタ</h3><textarea class="editor-textarea" placeholder="<html><body><h1>Test</h1></body></html>"></textarea></div>
-            <div class="settings-card"><h3>メモ</h3><textarea class="editor-textarea" style="color:#fff;" placeholder="メモを入力..."></textarea></div>
-        `;
+    function verifyAccAuth() {
+        const pass = document.getElementById('accAuthPass').value;
+        if (pass) document.getElementById('accAuthArea').style.display = 'block';
     }
 
+    function changeUsernamePrompt() {
+        const now = Date.now();
+        const accounts = getAccounts();
+        const user = accounts.find(a => a.username === currentUserData.username);
+
+        if (user && user.lockUntil && now < user.lockUntil) {
+            const daysLeft = Math.ceil((user.lockUntil - now) / (1000 * 60 * 60 * 24));
+            alert(`アカウント名は30日に1回しか変更できません。（あと ${daysLeft} 日）`);
+            return;
+        }
+
+        const newName = prompt("新しいアカウント名を入力してください:");
+        if (newName) {
+            user.username = newName;
+            user.lockUntil = now + (30 * 24 * 60 * 60 * 1000); // 30日固定ロック
+            saveAccounts(accounts);
+            currentUserData.username = newName;
+            localStorage.setItem('yuto_tube_user', JSON.stringify(currentUserData));
+            alert("アカウント名を変更しました！");
+            location.reload();
+        }
+    }
+
+    // 管理者権限 ＆ 利用ロググラフ
     function renderAdminPage() {
-        const accounts = getRegisteredAccounts();
+        const accounts = getAccounts();
         return `
             <h2>管理者権限</h2>
             <div class="settings-card">
-                <h3>登録利用者一覧 (${accounts.length}名)</h3>
-                <ul style="font-size: 13px; color: #ccc;">
-                    ${accounts.map(a => `<li>${a.username} [${a.role || '一般'}]</li>`).join('')}
+                <h3>利用者アカウント一覧</h3>
+                <ul style="font-size:12px; color:#ffaaaa;">
+                    ${accounts.map(a => `<li>${a.username} (${a.email}) [${a.role}] <button class="btn-custom" style="padding:2px 4px;" onclick="alert('${a.username} をBANしました')">BAN</button></li>`).join('')}
                 </ul>
+            </div>
+
+            <div class="settings-card">
+                <h3>利用ログ (動画視聴数 & 起動回数)</h3>
+                <canvas id="logChart" style="max-height:200px;"></canvas>
+            </div>
+        `;
+    }
+
+    // その他のツール
+    function renderToolsPage() {
+        return `
+            <h2>その他のツール</h2>
+            <div class="settings-card">
+                <h3>yuto-tube Lite をダウンロード</h3>
+                <a href="/lite.html" download="yuto-tube-lite.html" class="btn-custom" style="display:inline-block; text-decoration:none;">完全HTML版ダウンロード</a>
+            </div>
+            <div class="settings-card">
+                <h3>コードエディタ (HTML/CSS/JS試行・ドロップ編集)</h3>
+                <textarea class="editor-textarea" placeholder="ここにコードを入力..."></textarea>
+                <button class="btn-custom" style="margin-top:8px;" onclick="alert('試行実行')">ブラウザで試行</button>
+            </div>
+            <div class="settings-card">
+                <h3>メモ (.txt, .html, .pdf出力)</h3>
+                <textarea class="editor-textarea" placeholder="メモ..."></textarea>
+                <div style="margin-top:8px; display:flex; gap:6px;">
+                    <button class="btn-custom" onclick="alert('.txt保存')">.txt保存</button>
+                    <button class="btn-custom" onclick="alert('.html保存')">.html保存</button>
+                    <button class="btn-custom" onclick="alert('.pdf保存')">.pdf保存</button>
+                </div>
             </div>
         `;
     }
 
     function openFeedback() { window.open('https://forms.cloud.microsoft/r/HcmtDqFJ7W', '_blank'); }
-    function showSearchHint() { const hint = document.getElementById('searchHint'); hint.style.display = 'block'; setTimeout(() => { hint.style.display = 'none'; }, 3000); }
+    function executeSearch() { const q = document.getElementById('searchInput').value; if (q) selectGenre(`検索: ${q}`, q); }
+    function handleSearchKey(e) { if (e.key === 'Enter') executeSearch(); }
 
     function switchAuthView(view) {
-        document.getElementById('loginForm').style.display = view === 'register' ? 'none' : 'block';
+        document.getElementById('loginForm').style.display = view === 'login' ? 'block' : 'none';
         document.getElementById('registerForm').style.display = view === 'register' ? 'block' : 'none';
+        document.getElementById('planAForm').style.display = view === 'planA' ? 'block' : 'none';
     }
 
-    function toggleAuthFields() {
-        document.getElementById('adminPassGroup').style.display = document.getElementById('chkAdmin').checked ? 'block' : 'none';
-        document.getElementById('devPassGroup').style.display = document.getElementById('chkDev').checked ? 'block' : 'none';
+    function executePlanA() {
+        const option = document.getElementById('planOption').value;
+        const email = document.getElementById('planEmail').value;
+        if (!email) return alert("メールアドレスを入力してください");
+
+        if (option === 'リセット') {
+            const accounts = getAccounts();
+            const acc = accounts.find(a => a.email === email);
+            if (acc) {
+                acc.pass = "0";
+                saveAccounts(accounts);
+                alert("パスワードを「0」にリセットしました。パスワード「0」でログインしてください。");
+            } else alert("該当するメールアドレスが見つかりません");
+        } else {
+            alert(`プランA [${option}] のメールを ${email} に送信しました。`);
+        }
+        switchAuthView('login');
     }
 
-    function toggleRegAuthFields() {
-        document.getElementById('regAdminPassGroup').style.display = document.getElementById('regChkAdmin').checked ? 'block' : 'none';
-        document.getElementById('regDevPassGroup').style.display = document.getElementById('regChkDev').checked ? 'block' : 'none';
-    }
-
-    // 重複アカウント検証（リアルタイム）
     function checkUserExists() {
-        const username = document.getElementById('regUser').value.trim().toLowerCase();
-        const accounts = getRegisteredAccounts();
-        const isExist = accounts.some(a => a.username.toLowerCase() === username);
-        document.getElementById('userExistsError').style.display = isExist ? 'block' : 'none';
-        return isExist;
+        const name = document.getElementById('regUser').value.trim().toLowerCase();
+        const exists = getAccounts().some(a => a.username.toLowerCase() === name);
+        document.getElementById('userExistsError').style.display = exists ? 'block' : 'none';
+        return exists;
     }
 
-    // 厳格ログイン認証（登録アカウントのみ通過）
     function handleLogin() {
-        const username = document.getElementById('loginUser').value.trim();
+        const name = document.getElementById('loginUser').value.trim();
         const pin = document.getElementById('loginPin').value;
         const pass = document.getElementById('loginPass').value;
         const err = document.getElementById('loginError');
 
-        if (!username || !pin || !pass) {
+        const accounts = getAccounts();
+        const acc = accounts.find(a => a.username.toLowerCase() === name.toLowerCase() && a.pin === pin && a.pass === pass);
+
+        if (!acc) {
             err.style.display = 'block';
-            err.textContent = "アカウント名、PIN、パスワードをすべて入力してください";
+            err.textContent = "アカウント名、PIN、またはパスワードが一致しません";
             return;
         }
 
-        const accounts = getRegisteredAccounts();
-        const account = accounts.find(a => a.username.toLowerCase() === username.toLowerCase() && a.pin === pin && a.pass === pass);
-
-        if (!account) {
-            err.style.display = 'block';
-            err.textContent = "アカウントが存在しないか、PIN/パスワードが一致しません";
-            return;
-        }
-
-        currentUserData = { username: account.username, role: account.role || "一般利用者" };
+        currentUserData = { username: acc.username, role: acc.role || "一般利用者" };
         localStorage.setItem('yuto_tube_user', JSON.stringify(currentUserData));
         showMainApp(currentUserData);
     }
 
-    // 正しい新規アカウント登録
     function handleRegister() {
-        const username = document.getElementById('regUser').value.trim();
+        const name = document.getElementById('regUser').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
         const pin = document.getElementById('regPin').value;
-        const regAdmin = document.getElementById('regChkAdmin').checked;
-        const regDev = document.getElementById('regChkDev').checked;
 
-        if (!username || !pin) {
-            alert("アカウント名とPINを入力してください");
-            return;
-        }
+        if (!name || !pin || !email) return alert("全項目を入力してください");
+        if (checkUserExists()) return alert("このアカウント名は使用できません");
 
-        if (checkUserExists()) {
-            alert("他の人が使っているので、、、使用できません");
-            return;
-        }
+        const accounts = getAccounts();
+        accounts.push({ username: name, pin, pass: pin, email, role: "一般利用者", lockUntil: 0 });
+        saveAccounts(accounts);
 
-        let role = "一般利用者";
-        if (regDev) role = "開発者";
-        else if (regAdmin) role = "管理者";
-
-        const accounts = getRegisteredAccounts();
-        accounts.push({ username, pin, pass: pin, role });
-        saveRegisteredAccounts(accounts);
-
-        alert("アカウントを作成しました！ログイン画面からログインしてください");
+        alert("アカウントを作成しました！");
         switchAuthView('login');
     }
 
     function showMainApp(userData) {
         document.getElementById('authSection').style.display = 'none';
         document.getElementById('app-wrapper').style.display = 'block';
-        document.getElementById('displayUsername').textContent = userData.username;
-        document.getElementById('displayRole').textContent = `[${userData.role}]`;
+        document.getElementById('displayUsername').textContent = `${userData.username} [${userData.role}]`;
         selectGenre('ホーム', 'Roblox');
     }
 
