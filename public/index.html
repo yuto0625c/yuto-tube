@@ -24,15 +24,14 @@
             margin: 0; padding: 0; overflow-x: hidden;
         }
 
-        /* パスワード表示切替ボタン */
         .password-wrapper { position: relative; width: 100%; }
         .toggle-password {
             position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
-            cursor: pointer; font-size: 12px; color: #ff8888; user-select: none;
+            cursor: pointer; font-size: 11px; color: #ff8888; user-select: none;
             background: #2a0000; padding: 2px 6px; border-radius: 3px; border: 1px solid #660000;
         }
 
-        /* 認証モーダル (赤基調デザイン) */
+        /* 認証モーダル (神秘的な黒と赤) */
         .auth-container {
             display: flex; justify-content: center; align-items: center; min-height: 100vh;
             background: radial-gradient(circle, #3d0000 0%, #080000 100%);
@@ -61,7 +60,7 @@
         .auth-links { margin-top: 12px; text-align: center; font-size: 12px; }
         .auth-links a { color: #ff6666; text-decoration: none; display: block; margin-top: 4px; cursor: pointer; }
 
-        /* メインアプリ構造 */
+        /* ヘッダー */
         #app-wrapper { display: none; }
         header {
             display: flex; justify-content: space-between; align-items: center; padding: 10px 20px;
@@ -90,7 +89,7 @@
         .main-content { padding: 20px; transition: margin-left 0.3s ease; }
         .main-content.shifted { margin-left: var(--sidebar-width); }
 
-        /* カード・グリッド */
+        /* グリッド & アコーディオン */
         .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 15px; }
         .video-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; cursor: pointer; }
         .video-card img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
@@ -100,17 +99,22 @@
 
         .watch-container { display: flex; gap: 20px; flex-wrap: wrap; }
         .video-primary { flex: 1 1 60%; min-width: 320px; }
+        .video-secondary { flex: 1 1 35%; min-width: 280px; }
         .player-box { width: 100%; aspect-ratio: 16 / 9; background-color: #000; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
         .player-box iframe { width: 100%; height: 100%; border: none; }
-        .settings-card { background-color: var(--card-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #330000; font-size: 13px; }
-        .editor-textarea { width: 100%; height: 160px; background-color: #120000; border: 1px solid var(--border-color); color: #ffaa55; font-family: monospace; padding: 8px; box-sizing: border-box; border-radius: 5px; }
+        
+        .settings-card { background-color: var(--card-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 12px; }
+        .accordion-header { font-weight: bold; cursor: pointer; color: #ff4444; display: flex; justify-content: space-between; align-items: center; }
+        .accordion-content { display: none; margin-top: 10px; border-top: 1px solid #330000; padding-top: 10px; }
+        .accordion-content.active { display: block; }
+        .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #220000; font-size: 13px; }
+        .editor-textarea { width: 100%; height: 140px; background-color: #120000; border: 1px solid var(--border-color); color: #ffaa55; font-family: monospace; padding: 8px; box-sizing: border-box; border-radius: 5px; }
         .error-msg { color: #ff4444; font-size: 12px; margin-top: 4px; display: none; }
     </style>
 </head>
 <body>
 
-<!-- 認証画面 (ログイン / 新規作成 / パスワードをお忘れの方) -->
+<!-- 認証画面 -->
 <div class="auth-container" id="authSection">
     <!-- ログインフォーム -->
     <div class="auth-box" id="loginForm">
@@ -136,19 +140,19 @@
 
         <div class="auth-links">
             <a onclick="switchAuthView('forgot')">パスワードをお忘れの方</a>
-            <a onclick="switchAuthView('register')">新規アカウント作成</a>
+            <a onclick="switchAuthView('register')">アカウントを持っていませんか? 新規作成</a>
         </div>
     </div>
 
-    <!-- 新規作成フォーム (パスワード設定欄追加) -->
+    <!-- 新規作成フォーム (段階的認証＆パスワード入力欄) -->
     <div class="auth-box" id="registerForm" style="display: none;">
         <div class="auth-title">新規作成</div>
         <div class="input-group">
             <label>アカウント名</label>
             <input type="text" id="regUser" oninput="checkUserExists()">
-            <div class="error-msg" id="userExistsError">他の人が使っているため使用不可</div>
+            <div class="error-msg" id="userExistsError">他の人が使っているので、、、使用できません</div>
         </div>
-        <div class="input-group"><label>メールアドレス</label><input type="email" id="regEmail"></div>
+        <div class="input-group"><label>メールアドレス (空欄可)</label><input type="email" id="regEmail"></div>
         <div class="input-group">
             <label>PIN</label>
             <div class="password-wrapper">
@@ -156,18 +160,34 @@
                 <span class="toggle-password" id="btn-toggle-regPin" onclick="togglePassView('regPin')">表示</span>
             </div>
         </div>
-        <div class="input-group">
-            <label>パスワード</label>
+
+        <div class="input-group" style="margin-top:10px;">
+            <label><input type="checkbox" id="chkRegAdmin" onchange="toggleRegAuthFields()"> あなたは管理者ですか?</label>
+        </div>
+        <div class="input-group" id="regAdminGroup" style="display:none;">
+            <label>管理者用パスワード</label>
             <div class="password-wrapper">
-                <input type="password" id="regPass">
-                <span class="toggle-password" id="btn-toggle-regPass" onclick="togglePassView('regPass')">表示</span>
+                <input type="password" id="regAdminPass">
+                <span class="toggle-password" id="btn-toggle-regAdminPass" onclick="togglePassView('regAdminPass')">表示</span>
             </div>
         </div>
+
+        <div class="input-group">
+            <label><input type="checkbox" id="chkRegDev" onchange="toggleRegAuthFields()"> あなたは開発者ですか?</label>
+        </div>
+        <div class="input-group" id="regDevGroup" style="display:none;">
+            <label>開発者用パスワード</label>
+            <div class="password-wrapper">
+                <input type="password" id="regDevPass">
+                <span class="toggle-password" id="btn-toggle-regDevPass" onclick="togglePassView('regDevPass')">表示</span>
+            </div>
+        </div>
+
         <button class="btn-custom" onclick="handleRegister()">登録してログイン</button>
-        <div class="auth-links"><a onclick="switchAuthView('login')">ログインへ戻る</a></div>
+        <div class="auth-links"><a onclick="switchAuthView('login')">既にアカウントをお持ちの方はコチラ</a></div>
     </div>
 
-    <!-- パスワードをお忘れの方フォーム (「プランA」の文字削除) -->
+    <!-- パスワード再設定フォーム -->
     <div class="auth-box" id="forgotForm" style="display: none;">
         <div class="auth-title">パスワード再設定</div>
         <div class="input-group"><label>登録メールアドレス</label><input type="email" id="forgotEmail"></div>
@@ -184,7 +204,7 @@
     </div>
 </div>
 
-<!-- メインアプリ構造 -->
+<!-- メイン構造 -->
 <div id="app-wrapper">
     <header>
         <div class="header-left">
@@ -221,7 +241,7 @@
 
         <div class="sidebar-section-title">登録・リスト</div>
         <ul class="sidebar-menu">
-            <li onclick="navigateTool('subscriptions')">登録チャンネル (3件表示)</li>
+            <li onclick="navigateTool('subscriptions')">登録チャンネル</li>
             <li onclick="navigateTool('playlists')">再生リスト</li>
         </ul>
 
@@ -245,20 +265,16 @@
 <script>
     let currentUserData = null;
 
+    // ローカルストレージ（完全空の初期状態）
     function getAccounts() {
         const acc = localStorage.getItem('yuto_tube_accounts');
-        return acc ? JSON.parse(acc) : [
-            { username: "yuto", pin: "1234", pass: "yuto", email: "yuto@example.com", role: "開発者", lockUntil: 0 },
-            { username: "admin", pin: "0000", pass: "admin", email: "admin@example.com", role: "管理者", lockUntil: 0 }
-        ];
+        return acc ? JSON.parse(acc) : [];
     }
     function saveAccounts(acc) { localStorage.setItem('yuto_tube_accounts', JSON.stringify(acc)); }
 
     function getAnnouncements() {
         const ann = localStorage.getItem('yuto_tube_announcements');
-        return ann ? JSON.parse(ann) : [
-            { id: 1, author: "yuto", role: "開発者", time: "2026-10-11 10:23", title: "v14.26.8.1.01 リリース", category: "お知らせ", content: "新機能を多数追加しました！" }
-        ];
+        return ann ? JSON.parse(ann) : [];
     }
     function saveAnnouncements(ann) { localStorage.setItem('yuto_tube_announcements', JSON.stringify(ann)); }
 
@@ -287,7 +303,6 @@
         document.getElementById('clock').textContent = hours + ':' + minutes + ' ' + ampm;
     }
 
-    // パスワード表示切替 (表示 ➔ 非表示 テキスト変更対応)
     function togglePassView(id) {
         const elem = document.getElementById(id);
         const btn = document.getElementById('btn-toggle-' + id);
@@ -315,6 +330,7 @@
         document.getElementById('mainContent').classList.remove('shifted');
     }
 
+    // 動画検索・一覧読み込み
     function loadVideos(title, query) {
         const container = document.getElementById('viewContainer');
         container.innerHTML = `<h2>${title}</h2><p style="color:#ff8888;">動画を取得中...</p>`;
@@ -325,7 +341,7 @@
                 let html = `<h2>${title}</h2><div class="video-grid">`;
                 data.videos.forEach(v => {
                     html += `
-                        <div class="video-card" onclick="playVideo('${v.id}', '${v.title.replace(/'/g, "\\'")}')">
+                        <div class="video-card" onclick="playVideo('${v.id}', '${v.title.replace(/'/g, "\\'")}', '${v.author}')">
                             <img src="${v.thumbnail}">
                             <div class="video-card-body">
                                 <div class="video-card-title">${v.title}</div>
@@ -339,51 +355,194 @@
             });
     }
 
-    function playVideo(id, title) {
+    // 動画再生画面 (左側動画 / 右側関連動画 Layout)
+    function playVideo(id, title, author) {
         const container = document.getElementById('viewContainer');
         container.innerHTML = `
             <div class="watch-container">
                 <div class="video-primary">
-                    <div class="player-box"><iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1" allowfullscreen></iframe></div>
+                    <div class="player-box"><iframe id="mainPlayer" src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1" allowfullscreen></iframe></div>
                     <div class="settings-card" style="margin-top:10px;">
                         <h3>${title}</h3>
-                        <p style="font-size:12px; color:#ff8888;">ストリーム再生中</p>
+                        <p style="font-size:12px; color:#ff8888;">チャンネル: ${author} | プレイヤー選択可能</p>
+                        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
+                            <button class="btn-custom" style="padding:4px 8px; font-size:11px;" onclick="changePlayerMode('${id}', 'nocookie')">nocookie</button>
+                            <button class="btn-custom" style="padding:4px 8px; font-size:11px;" onclick="changePlayerMode('${id}', 'stream')">ストリーム</button>
+                            <button class="btn-custom" style="padding:4px 8px; font-size:11px;" onclick="changePlayerMode('${id}', 'edu')">education</button>
+                        </div>
                     </div>
+                </div>
+                <div class="video-secondary">
+                    <h3>関連動画</h3>
+                    <div id="relatedBox">読み込み中...</div>
                 </div>
             </div>
         `;
+
+        fetch(`/api/search?q=おすすめ`)
+            .then(res => res.json())
+            .then(data => {
+                let relHtml = "";
+                data.videos.slice(0, 5).forEach(v => {
+                    relHtml += `
+                        <div class="video-card" style="margin-bottom:10px;" onclick="playVideo('${v.id}', '${v.title.replace(/'/g, "\\'")}', '${v.author}')">
+                            <img src="${v.thumbnail}" style="height:90px;">
+                            <div class="video-card-body">
+                                <div class="video-card-title">${v.title}</div>
+                                <div class="video-card-author">${v.author}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('relatedBox').innerHTML = relHtml;
+            });
+    }
+
+    function changePlayerMode(id, mode) {
+        const p = document.getElementById('mainPlayer');
+        if (mode === 'edu') p.src = `https://www.youtube.com/embed/${id}?mode=educational`;
+        else if (mode === 'stream') p.src = `https://piped.video/embed/${id}`;
+        else p.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1`;
     }
 
     function renderShortsView() {
         const container = document.getElementById('viewContainer');
         container.innerHTML = `
             <h2>ショート</h2>
-            <div style="max-width: 360px; margin: 0 auto; height: 80vh; overflow-y: scroll; snap-type: y mandatory;">
-                <div style="height: 100%; snap-align: start; margin-bottom: 20px;">
+            <div style="max-width:360px; margin:0 auto; height:75vh; overflow-y:scroll; snap-type:y mandatory;">
+                <div style="height:100%; snap-align:start; margin-bottom:20px;">
                     <iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" style="width:100%; height:100%; border:none; border-radius:12px;"></iframe>
-                </div>
-                <div style="height: 100%; snap-align: start;">
-                    <iframe src="https://www.youtube-nocookie.com/embed/3JZ_D3ELwOQ" style="width:100%; height:100%; border:none; border-radius:12px;"></iframe>
                 </div>
             </div>
         `;
         closeSidebar();
     }
 
+    // 折りたたみ式（アコーディオン）ツール＆設定ページ
     function navigateTool(tool) {
         const container = document.getElementById('viewContainer');
-        if (tool === 'settings') container.innerHTML = renderSettingsPage();
-        else if (tool === 'admin') container.innerHTML = renderAdminPage();
-        else if (tool === 'tools') container.innerHTML = renderToolsPage();
+        if (tool === 'settings') container.innerHTML = renderGroupedSettingsPage();
+        else if (tool === 'admin') container.innerHTML = renderGroupedAdminPage();
+        else if (tool === 'tools') container.innerHTML = renderGroupedToolsPage();
         else if (tool === 'newsBoard') container.innerHTML = renderNewsBoardPage();
         else if (tool === 'subscriptions') container.innerHTML = renderSubscriptionsPage();
-        else if (tool === 'playlists') container.innerHTML = `<h2>再生リスト</h2><p>保存された再生リストが表示されます。</p>`;
+        else if (tool === 'playlists') container.innerHTML = `<h2>再生リスト</h2><p>保存された再生リスト一覧です。</p>`;
         closeSidebar();
+    }
+
+    function toggleAccordion(id) {
+        const content = document.getElementById(id);
+        content.classList.toggle('active');
+    }
+
+    // 設定 (グループ分けアコーディオン)
+    function renderGroupedSettingsPage() {
+        return `
+            <h2>設定</h2>
+            <div class="settings-card">
+                <div class="accordion-header" onclick="toggleAccordion('accSet1')">
+                    <span>アカウント設定</span><span>▼</span>
+                </div>
+                <div class="accordion-content" id="accSet1">
+                    <div class="input-group"><label>現在のパスワード認証</label><input type="password" id="passAuth"></div>
+                    <button class="btn-custom" onclick="document.getElementById('accSecDetails').style.display='block'">認証</button>
+                    <div id="accSecDetails" style="display:none; margin-top:10px;">
+                        <div class="settings-row"><span>アカウント名変更 (30日に1回)</span><button class="btn-custom" onclick="changeUsernamePrompt()">変更</button></div>
+                        <div class="settings-row"><span>メールアドレス追加/変更</span><button class="btn-custom" onclick="alert('更新しました')">変更</button></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div class="accordion-header" onclick="toggleAccordion('accSet2')">
+                    <span>動画取得・再生設定</span><span>▼</span>
+                </div>
+                <div class="accordion-content" id="accSet2">
+                    <div class="settings-row"><span>サムネイル取得</span><select class="btn-custom"><option>wsrv.nl プロキシ</option></select></div>
+                    <div class="settings-row"><span>ダークモード</span><button class="btn-custom">ON (標準)</button></div>
+                </div>
+            </div>
+        `;
+    }
+
+    function changeUsernamePrompt() {
+        const now = Date.now();
+        const accounts = getAccounts();
+        const user = accounts.find(a => a.username === currentUserData.username);
+
+        if (user && user.lockUntil && now < user.lockUntil) {
+            const days = Math.ceil((user.lockUntil - now) / (1000 * 60 * 60 * 24));
+            alert(`アカウント名は30日に1回しか変更できません。（あと ${days} 日）`);
+            return;
+        }
+
+        const newName = prompt("新しいアカウント名を入力してください:");
+        if (newName) {
+            user.username = newName;
+            user.lockUntil = now + (30 * 24 * 60 * 60 * 1000);
+            saveAccounts(accounts);
+            currentUserData.username = newName;
+            localStorage.setItem('yuto_tube_user', JSON.stringify(currentUserData));
+            alert("アカウント名を変更しました！");
+            location.reload();
+        }
+    }
+
+    // 管理者権限 (グループ分けアコーディオン)
+    function renderGroupedAdminPage() {
+        const accounts = getAccounts();
+        return `
+            <h2>管理者権限</h2>
+            <div class="settings-card">
+                <div class="accordion-header" onclick="toggleAccordion('accAdm1')">
+                    <span>登録利用者一覧 (${accounts.length}名)</span><span>▼</span>
+                </div>
+                <div class="accordion-content" id="accAdm1">
+                    <ul style="font-size:12px; color:#ffaaaa;">
+                        ${accounts.length === 0 ? '<li>登録アカウントはありません</li>' : accounts.map(a => `<li>${a.username} (${a.email}) [${a.role}] <button class="btn-custom" style="padding:2px 4px;" onclick="alert('${a.username} をBANしました')">BAN</button></li>`).join('')}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div class="accordion-header" onclick="toggleAccordion('accAdm2')">
+                    <span>利用ロググラフ</span><span>▼</span>
+                </div>
+                <div class="accordion-content" id="accAdm2">
+                    <canvas id="logChart" style="max-height:180px;"></canvas>
+                </div>
+            </div>
+        `;
+    }
+
+    // その他のツール (グループ分けアコーディオン)
+    function renderGroupedToolsPage() {
+        return `
+            <h2>その他のツール</h2>
+            <div class="settings-card">
+                <div class="accordion-header" onclick="toggleAccordion('accTool1')">
+                    <span>yuto-tube Lite ダウンロード</span><span>▼</span>
+                </div>
+                <div class="accordion-content" id="accTool1">
+                    <a href="/lite.html" download="yuto-tube-lite.html" class="btn-custom" style="display:inline-block; text-decoration:none;">完全HTML版をダウンロード</a>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div class="accordion-header" onclick="toggleAccordion('accTool2')">
+                    <span>開発用コードエディタ</span><span>▼</span>
+                </div>
+                <div class="accordion-content" id="accTool2">
+                    <textarea class="editor-textarea" placeholder="HTML/CSS/JS を入力..."></textarea>
+                    <button class="btn-custom" style="margin-top:6px;" onclick="alert('試行実行')">ブラウザ試行</button>
+                </div>
+            </div>
+        `;
     }
 
     function renderNewsBoardPage() {
         const annList = getAnnouncements();
-        const canPost = currentUserData.role === '管理者' || currentUserData.role === '開発者';
+        const canPost = currentUserData && (currentUserData.role === '管理者' || currentUserData.role === '開発者');
 
         let html = `<h2>開発者・管理者のお知らせ</h2>`;
         if (canPost) {
@@ -391,29 +550,25 @@
                 <div class="settings-card">
                     <h3>お知らせ新規投稿</h3>
                     <div class="input-group"><label>タイトル</label><input type="text" id="annTitle"></div>
-                    <div class="input-group">
-                        <label>ジャンル</label>
-                        <select id="annCategory" class="btn-custom" style="text-align:left;">
-                            <option>お知らせ</option><option>不具合</option><option>許可申請</option><option>連絡</option>
-                        </select>
-                    </div>
+                    <div class="input-group"><label>ジャンル</label><select id="annCategory" class="btn-custom" style="text-align:left;"><option>お知らせ</option><option>不具合</option><option>許可申請</option><option>連絡</option></select></div>
                     <div class="input-group"><label>投稿内容</label><textarea id="annContent" class="editor-textarea"></textarea></div>
                     <button class="btn-custom" onclick="postAnnouncement()">投稿する</button>
                 </div>
             `;
         }
 
-        html += `<div style="margin-top:20px;">`;
+        html += `<div style="margin-top:15px;">`;
+        if (annList.length === 0) html += `<p style="font-size:13px; color:#aaa;">投稿されたお知らせはありません。</p>`;
         annList.forEach(item => {
-            const canDelete = currentUserData.username === item.author || currentUserData.role === '開発者';
+            const canDelete = currentUserData && (currentUserData.username === item.author || currentUserData.role === '開発者');
             html += `
                 <div class="settings-card">
-                    <div style="display:flex; justify-content:space-between; font-size:12px; color:#ff8888;">
+                    <div style="display:flex; justify-content:space-between; font-size:11px; color:#ff8888;">
                         <span>投稿者: ${item.author} [${item.role}] | ${item.time} | 【${item.category}】</span>
                         ${canDelete ? `<button class="btn-custom" style="padding:2px 6px;" onclick="deleteAnnouncement(${item.id})">削除</button>` : ''}
                     </div>
-                    <h3 style="margin:8px 0 4px; color:#ff4444;">${item.title}</h3>
-                    <p style="font-size:13px; color:#ffcccc;">${item.content}</p>
+                    <h3 style="margin:6px 0 4px; color:#ff4444;">${item.title}</h3>
+                    <p style="font-size:12px; color:#ffcccc;">${item.content}</p>
                 </div>
             `;
         });
@@ -447,100 +602,7 @@
     }
 
     function renderSubscriptionsPage() {
-        return `
-            <h2>登録チャンネル</h2>
-            <div class="video-grid">
-                <div class="video-card"><div class="video-card-body"><h3>マエスケ</h3><p style="font-size:11px;">登録中</p></div></div>
-                <div class="video-card"><div class="video-card-body"><h3>ロミくん</h3><p style="font-size:11px;">登録中</p></div></div>
-                <div class="video-card"><div class="video-card-body"><h3>公式チャンネル</h3><p style="font-size:11px;">登録中</p></div></div>
-            </div>
-        `;
-    }
-
-    function renderSettingsPage() {
-        return `
-            <h2>設定</h2>
-            <div class="settings-card">
-                <h3>アカウント設定 (要認証)</h3>
-                <div class="input-group"><label>現在のパスワードを入力してください</label><input type="password" id="accAuthPass"></div>
-                <button class="btn-custom" onclick="verifyAccAuth()">アカウント認証</button>
-                
-                <div id="accAuthArea" style="display:none; margin-top:15px;">
-                    <div class="settings-row">
-                        <span>アカウント名変更 (30日に1回のみ)</span>
-                        <button class="btn-custom" onclick="changeUsernamePrompt()">変更</button>
-                    </div>
-                    <div class="settings-row">
-                        <span>メールアドレス変更/追加</span>
-                        <button class="btn-custom" onclick="alert('メールアドレスを変更しました')">変更</button>
-                    </div>
-                    <div class="settings-row">
-                        <span>ステータス一時切り替え (利用者へ)</span>
-                        <button class="btn-custom" onclick="alert('一時的に一般利用者に変更しました')">切り替え</button>
-                    </div>
-                    <div class="settings-row">
-                        <span>アカウント削除 (7日以内なら復元可能)</span>
-                        <button class="btn-custom" style="background:#880000;" onclick="alert('7日間の復元猶予付きで削除申請しました')">アカウント削除</button>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    function verifyAccAuth() {
-        const pass = document.getElementById('accAuthPass').value;
-        if (pass) document.getElementById('accAuthArea').style.display = 'block';
-    }
-
-    function changeUsernamePrompt() {
-        const now = Date.now();
-        const accounts = getAccounts();
-        const user = accounts.find(a => a.username === currentUserData.username);
-
-        if (user && user.lockUntil && now < user.lockUntil) {
-            const daysLeft = Math.ceil((user.lockUntil - now) / (1000 * 60 * 60 * 24));
-            alert(`アカウント名は30日に1回しか変更できません。（あと ${daysLeft} 日）`);
-            return;
-        }
-
-        const newName = prompt("新しいアカウント名を入力してください:");
-        if (newName) {
-            user.username = newName;
-            user.lockUntil = now + (30 * 24 * 60 * 60 * 1000);
-            saveAccounts(accounts);
-            currentUserData.username = newName;
-            localStorage.setItem('yuto_tube_user', JSON.stringify(currentUserData));
-            alert("アカウント名を変更しました！");
-            location.reload();
-        }
-    }
-
-    function renderAdminPage() {
-        const accounts = getAccounts();
-        return `
-            <h2>管理者権限</h2>
-            <div class="settings-card">
-                <h3>利用者アカウント一覧</h3>
-                <ul style="font-size:12px; color:#ffaaaa;">
-                    ${accounts.map(a => `<li>${a.username} (${a.email}) [${a.role}] <button class="btn-custom" style="padding:2px 4px;" onclick="alert('${a.username} をBANしました')">BAN</button></li>`).join('')}
-                </ul>
-            </div>
-        `;
-    }
-
-    function renderToolsPage() {
-        return `
-            <h2>その他のツール</h2>
-            <div class="settings-card">
-                <h3>yuto-tube Lite をダウンロード</h3>
-                <a href="/lite.html" download="yuto-tube-lite.html" class="btn-custom" style="display:inline-block; text-decoration:none;">完全HTML版ダウンロード</a>
-            </div>
-            <div class="settings-card">
-                <h3>コードエディタ (HTML/CSS/JS試行)</h3>
-                <textarea class="editor-textarea" placeholder="ここにコードを入力..."></textarea>
-                <button class="btn-custom" style="margin-top:8px;" onclick="alert('試行実行')">ブラウザで試行</button>
-            </div>
-        `;
+        return `<h2>登録チャンネル</h2><div class="video-grid"><div class="video-card"><div class="video-card-body"><h3>マエスケ</h3><p style="font-size:11px;">登録中</p></div></div></div>`;
     }
 
     function openFeedback() { window.open('https://forms.cloud.microsoft/r/HcmtDqFJ7W', '_blank'); }
@@ -551,6 +613,11 @@
         document.getElementById('loginForm').style.display = view === 'login' ? 'block' : 'none';
         document.getElementById('registerForm').style.display = view === 'register' ? 'block' : 'none';
         document.getElementById('forgotForm').style.display = view === 'forgot' ? 'block' : 'none';
+    }
+
+    function toggleRegAuthFields() {
+        document.getElementById('regAdminGroup').style.display = document.getElementById('chkRegAdmin').checked ? 'block' : 'none';
+        document.getElementById('regDevGroup').style.display = document.getElementById('chkRegDev').checked ? 'block' : 'none';
     }
 
     function executeForgot() {
@@ -564,10 +631,10 @@
             if (acc) {
                 acc.pass = "0";
                 saveAccounts(accounts);
-                alert("パスワードを「0」にリセットしました。パスワード「0」でログインしてください。");
+                alert("パスワードを「0」にリセットしました。");
             } else alert("該当するメールアドレスが見つかりません");
         } else {
-            alert(`手続き [${option}] の案内を ${email} に送信しました。`);
+            alert(`案内を ${email} に送信しました。`);
         }
         switchAuthView('login');
     }
@@ -599,26 +666,36 @@
         showMainApp(currentUserData);
     }
 
-    // 新規登録処理（パスワード保持 ＆ そのまま即ログイン）
     function handleRegister() {
         const name = document.getElementById('regUser').value.trim();
         const email = document.getElementById('regEmail').value.trim();
         const pin = document.getElementById('regPin').value;
-        const pass = document.getElementById('regPass').value;
+        const isAdmin = document.getElementById('chkRegAdmin').checked;
+        const isDev = document.getElementById('chkRegDev').checked;
 
-        if (!name || !pin || !pass || !email) return alert("すべての項目を入力してください");
+        if (!name || !pin) return alert("アカウント名とPINは必須です");
         if (checkUserExists()) return alert("このアカウント名は使用できません");
 
-        const newAcc = { username: name, pin, pass, email, role: "一般利用者", lockUntil: 0 };
+        let role = "一般利用者";
+        let pass = pin;
+
+        if (isDev) {
+            role = "開発者";
+            pass = document.getElementById('regDevPass').value || pin;
+        } else if (isAdmin) {
+            role = "管理者";
+            pass = document.getElementById('regAdminPass').value || pin;
+        }
+
+        const newAcc = { username: name, pin, pass, email, role, lockUntil: 0 };
         const accounts = getAccounts();
         accounts.push(newAcc);
         saveAccounts(accounts);
 
-        // 新規作成完了後、そのままローカルストレージに保持して即時ログイン状態に移行
         currentUserData = { username: newAcc.username, role: newAcc.role };
         localStorage.setItem('yuto_tube_user', JSON.stringify(currentUserData));
 
-        alert("アカウントを作成しました！そのままログインしてサービスを利用します。");
+        alert("アカウントを作成しました！そのままサービスを開始します。");
         showMainApp(currentUserData);
     }
 
