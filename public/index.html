@@ -6,7 +6,7 @@
     <title>yuto-tube v14.26.8.1.01</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* 神秘的な黒と赤のテーマ（文字・ボタンは白以外の鮮やかな配色） */
+        /* 黒と赤の神秘的UI (テキスト・ボタンは白以外の赤・ピンク系) */
         :root {
             --bg-color: #080000;
             --header-bg: #1a0303;
@@ -16,7 +16,7 @@
             --border-color: #660000;
             --btn-bg: #4a0000;
             --btn-hover: #880000;
-            --sidebar-width: 250px;
+            --sidebar-width: 240px;
         }
         body {
             background-color: var(--bg-color); color: var(--text-color);
@@ -30,7 +30,7 @@
             background: #2a0000; padding: 2px 6px; border-radius: 3px; border: 1px solid #660000;
         }
 
-        /* ログイン認証モーダル */
+        /* ログイン・新規作成モーダル */
         .auth-container {
             display: flex; justify-content: center; align-items: center; min-height: 100vh;
             background: radial-gradient(circle, #3d0000 0%, #080000 100%);
@@ -89,20 +89,22 @@
         .main-content { padding: 20px; transition: margin-left 0.3s ease; }
         .main-content.shifted { margin-left: var(--sidebar-width); }
 
-        /* アコーディオン・カード */
-        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 15px; }
-        .video-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; cursor: pointer; }
+        /* 本家YouTube互換 カード・グリッド・再生レイアウト */
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; margin-top: 15px; }
+        .video-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
+        .video-card:hover { transform: translateY(-3px); border-color: var(--accent-color); }
         .video-card img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
         .video-card-body { padding: 10px; }
         .video-card-title { font-weight: bold; font-size: 13px; color: #ffcccc; margin-bottom: 4px; line-height: 1.3; }
         .video-card-author { font-size: 11px; color: #ff8888; }
 
         .watch-container { display: flex; gap: 20px; flex-wrap: wrap; }
-        .video-primary { flex: 1 1 60%; min-width: 320px; }
-        .video-secondary { flex: 1 1 35%; min-width: 280px; }
+        .video-primary { flex: 1 1 62%; min-width: 320px; }
+        .video-secondary { flex: 1 1 33%; min-width: 280px; }
         .player-box { width: 100%; aspect-ratio: 16 / 9; background-color: #000; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
         .player-box iframe { width: 100%; height: 100%; border: none; }
-        
+
+        /* アコーディオン設定・ツール */
         .settings-card { background-color: var(--card-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 12px; }
         .accordion-header { font-weight: bold; cursor: pointer; color: #ff4444; display: flex; justify-content: space-between; align-items: center; }
         .accordion-content { display: none; margin-top: 10px; border-top: 1px solid #330000; padding-top: 10px; }
@@ -114,7 +116,7 @@
 </head>
 <body>
 
-<!-- 認証画面 (初期データ全削除状態) -->
+<!-- 認証画面 -->
 <div class="auth-container" id="authSection">
     <div class="auth-box" id="loginForm">
         <div class="auth-title">yuto-tube</div>
@@ -143,7 +145,7 @@
         </div>
     </div>
 
-    <!-- 新規作成 (三段階認証展開付き) -->
+    <!-- 新規作成モーダル (段階的認証展開) -->
     <div class="auth-box" id="registerForm" style="display: none;">
         <div class="auth-title">新規作成</div>
         <div class="input-group">
@@ -208,7 +210,7 @@
     <header>
         <div class="header-left">
             <div class="menu-btn" onclick="toggleSidebar()">≡</div>
-            <a onclick="selectGenre('ホーム', 'Roblox')" class="logo" id="appLogoTitle">yuto-tube v14.26.8.1.01</a>
+            <a onclick="selectGenre('ホーム', 'YouTube 日本 急上昇')" class="logo" id="appLogoTitle">yuto-tube v14.26.8.1.01</a>
         </div>
         <div class="search-container">
             <input type="text" class="search-box" placeholder="検索" id="searchInput" onkeypress="handleSearchKey(event)">
@@ -225,14 +227,14 @@
     <nav class="sidebar" id="sidebar">
         <div class="sidebar-section-title">動画ジャンル</div>
         <ul class="sidebar-menu">
-            <li onclick="selectGenre('ホーム', 'Roblox')">ホーム</li>
+            <li onclick="selectGenre('ホーム', 'YouTube 日本 急上昇')">ホーム</li>
             <li onclick="renderShortsView()">ショート</li>
             <li onclick="selectGenre('ゲーム', 'ゲーム実況')">ゲーム</li>
-            <li onclick="selectGenre('スポーツ', 'スポーツ')">スポーツ</li>
-            <li onclick="selectGenre('ニュース', 'ニュース')">ニュース</li>
-            <li onclick="selectGenre('エンタメ', 'エンタメ')">エンタメ</li>
-            <li onclick="selectGenre('音楽', '音楽 MV')">音楽</li>
-            <li onclick="selectGenre('学習', '学習 解説')">学習</li>
+            <li onclick="selectGenre('スポーツ', 'スポーツ ハイライト')">スポーツ</li>
+            <li onclick="selectGenre('ニュース', 'ニュース ライブ')">ニュース</li>
+            <li onclick="selectGenre('エンタメ', 'エンタメ メドレー')">エンタメ</li>
+            <li onclick="selectGenre('音楽', '公式 MV')">音楽</li>
+            <li onclick="selectGenre('学習', '勉強 解説')">学習</li>
             <li onclick="selectGenre('ライブ', 'ライブ配信')">ライブ</li>
         </ul>
 
@@ -240,7 +242,7 @@
 
         <div class="sidebar-section-title">登録・リスト</div>
         <ul class="sidebar-menu">
-            <li onclick="navigateTool('subscriptions')">登録チャンネル (3件表示)</li>
+            <li onclick="navigateTool('subscriptions')">登録チャンネル</li>
             <li onclick="navigateTool('playlists')">再生リスト</li>
         </ul>
 
@@ -264,7 +266,6 @@
 <script>
     let currentUserData = null;
 
-    // ローカルストレージ管理 (初期データゼロ)
     function getAccounts() {
         const acc = localStorage.getItem('yuto_tube_accounts');
         return acc ? JSON.parse(acc) : [];
@@ -291,7 +292,6 @@
             showMainApp(currentUserData);
         }
 
-        // キーボードショートカット ( / キーで検索バーへ移動 )
         document.addEventListener('keydown', function(e) {
             if (document.getElementById('app-wrapper').style.display === 'block') {
                 const activeTag = document.activeElement.tagName.toLowerCase();
@@ -346,7 +346,7 @@
         document.getElementById('mainContent').classList.remove('shifted');
     }
 
-    // 検索・動画リスト取得
+    // 長尺通常動画一覧の描画（ショート完全排除）
     function loadVideos(title, query) {
         const container = document.getElementById('viewContainer');
         container.innerHTML = `<h2>${title}</h2><p style="color:#ff8888;">動画を取得中...</p>`;
@@ -371,7 +371,7 @@
             });
     }
 
-    // 動画再生画面 (左側動画 / 右側関連動画 Layout)
+    // 本家YouTube / Choco-Tube 完全互換の動画再生画面
     function playVideo(id, title, author) {
         const container = document.getElementById('viewContainer');
         container.innerHTML = `
@@ -380,26 +380,31 @@
                     <div class="player-box"><iframe id="mainPlayer" src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1" allowfullscreen></iframe></div>
                     <div class="settings-card" style="margin-top:10px;">
                         <h3>${title}</h3>
-                        <p style="font-size:12px; color:#ff8888;">チャンネル: ${author} | プレイヤー切り替え</p>
-                        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
-                            <button class="btn-custom" style="padding:4px 8px; font-size:11px;" onclick="changePlayerMode('${id}', 'nocookie')">nocookie</button>
-                            <button class="btn-custom" style="padding:4px 8px; font-size:11px;" onclick="changePlayerMode('${id}', 'stream')">ストリーム</button>
-                            <button class="btn-custom" style="padding:4px 8px; font-size:11px;" onclick="changePlayerMode('${id}', 'edu')">education</button>
+                        <p style="font-size:12px; color:#ff8888;">チャンネル: ${author}</p>
+                        
+                        <!-- 動画操作ツールバー -->
+                        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; border-top:1px solid #330000; padding-top:10px;">
+                            <button class="btn-custom" style="padding:4px 8px; font-size:11px; width:auto;" onclick="changePlayerMode('${id}', 'nocookie')">nocookie</button>
+                            <button class="btn-custom" style="padding:4px 8px; font-size:11px; width:auto;" onclick="changePlayerMode('${id}', 'stream')">ストリーム</button>
+                            <button class="btn-custom" style="padding:4px 8px; font-size:11px; width:auto;" onclick="changePlayerMode('${id}', 'edu')">education</button>
+                            <select class="btn-custom" style="padding:4px; font-size:11px; width:auto;"><option>1072p</option><option>804p</option><option>360p</option><option>音声のみ</option></select>
+                            <button class="btn-custom" style="padding:4px 8px; font-size:11px; width:auto;" onclick="alert('ループ切替')">ループ</button>
+                            <button class="btn-custom" style="padding:4px 8px; font-size:11px; width:auto;" onclick="alert('yt-dlpダウンロード処理')">保存 (yt-dlp)</button>
                         </div>
                     </div>
                 </div>
                 <div class="video-secondary">
-                    <h3>関連動画</h3>
+                    <h3 style="margin-top:0;">関連動画</h3>
                     <div id="relatedBox">読み込み中...</div>
                 </div>
             </div>
         `;
 
-        fetch(`/api/search?q=おすすめ動画`)
+        fetch(`/api/search?q=関連動画`)
             .then(res => res.json())
             .then(data => {
                 let relHtml = "";
-                data.videos.slice(0, 5).forEach(v => {
+                data.videos.slice(0, 6).forEach(v => {
                     relHtml += `
                         <div class="video-card" style="margin-bottom:10px;" onclick="playVideo('${v.id}', '${v.title.replace(/'/g, "\\'")}', '${v.author}')">
                             <img src="${v.thumbnail}" style="height:90px;">
@@ -421,21 +426,35 @@
         else p.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1`;
     }
 
-    // ショート動画 (縦スクロールモード)
+    // 本家YouTube Shorts完全互換（縦長 9:16 動画のみ & 自動再生）
     function renderShortsView() {
         const container = document.getElementById('viewContainer');
-        container.innerHTML = `
-            <h2>ショート</h2>
-            <div style="max-width:360px; margin:0 auto; height:75vh; overflow-y:scroll; snap-type:y mandatory;">
-                <div style="height:100%; snap-align:start; margin-bottom:20px;">
-                    <iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" style="width:100%; height:100%; border:none; border-radius:12px;"></iframe>
-                </div>
-            </div>
-        `;
+        container.innerHTML = `<h2>ショート</h2><p style="color:#ff8888;">ショート動画を取得中...</p>`;
+
+        fetch('/api/shorts')
+            .then(res => res.json())
+            .then(data => {
+                let html = `
+                    <h2>ショート</h2>
+                    <div style="max-width:340px; margin:0 auto; height:78vh; overflow-y:scroll; snap-type:y mandatory; border:1px solid var(--border-color); border-radius:12px; padding:10px; background:#000;">
+                `;
+                data.shorts.forEach((s, idx) => {
+                    html += `
+                        <div style="height:100%; snap-align:start; margin-bottom:20px; display:flex; flex-direction:column; justify-content:center;">
+                            <div style="width:100%; height:85%; background:#111; border-radius:8px; overflow:hidden;">
+                                <iframe src="https://www.youtube-nocookie.com/embed/${s.id}?autoplay=${idx === 0 ? 1 : 0}&mute=0" style="width:100%; height:100%; border:none;" allow="autoplay"></iframe>
+                            </div>
+                            <div style="padding:8px 0; font-size:12px; color:#ffcccc; font-weight:bold;">${s.title}</div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+                container.innerHTML = html;
+            });
         closeSidebar();
     }
 
-    // グループ分け・アコーディオン型 ツール & 設定
+    // アコーディオン構造ツール & 設定
     function navigateTool(tool) {
         const container = document.getElementById('viewContainer');
         if (tool === 'settings') container.innerHTML = renderGroupedSettingsPage();
@@ -448,34 +467,28 @@
     }
 
     function toggleAccordion(id) {
-        const content = document.getElementById(id);
-        content.classList.toggle('active');
+        document.getElementById(id).classList.toggle('active');
     }
 
     function renderGroupedSettingsPage() {
         return `
             <h2>設定</h2>
             <div class="settings-card">
-                <div class="accordion-header" onclick="toggleAccordion('accSet1')">
-                    <span>アカウント設定</span><span>▼</span>
-                </div>
+                <div class="accordion-header" onclick="toggleAccordion('accSet1')"><span>アカウント設定</span><span>▼</span></div>
                 <div class="accordion-content" id="accSet1">
                     <div class="input-group"><label>パスワード認証</label><input type="password" id="passAuth"></div>
                     <button class="btn-custom" onclick="document.getElementById('accSecDetails').style.display='block'">認証</button>
                     <div id="accSecDetails" style="display:none; margin-top:10px;">
-                        <div class="settings-row"><span>アカウント名変更 (30日固定)</span><button class="btn-custom" onclick="changeUsernamePrompt()">変更</button></div>
-                        <div class="settings-row"><span>メールアドレス変更</span><button class="btn-custom" onclick="alert('更新完了')">変更</button></div>
+                        <div class="settings-row"><span>アカウント名変更 (30日固定)</span><button class="btn-custom" style="width:auto;" onclick="changeUsernamePrompt()">変更</button></div>
+                        <div class="settings-row"><span>メールアドレス変更</span><button class="btn-custom" style="width:auto;" onclick="alert('更新完了')">変更</button></div>
                     </div>
                 </div>
             </div>
-
             <div class="settings-card">
-                <div class="accordion-header" onclick="toggleAccordion('accSet2')">
-                    <span>動画取得・表示設定</span><span>▼</span>
-                </div>
+                <div class="accordion-header" onclick="toggleAccordion('accSet2')"><span>動画取得・表示設定</span><span>▼</span></div>
                 <div class="accordion-content" id="accSet2">
-                    <div class="settings-row"><span>サムネイル取得</span><select class="btn-custom"><option>wsrv.nl プロキシ</option></select></div>
-                    <div class="settings-row"><span>ダークモード</span><button class="btn-custom">ON (標準)</button></div>
+                    <div class="settings-row"><span>サムネイル取得</span><select class="btn-custom" style="width:auto;"><option>wsrv.nl プロキシ</option></select></div>
+                    <div class="settings-row"><span>ダークモード</span><button class="btn-custom" style="width:auto;">ON (標準)</button></div>
                 </div>
             </div>
         `;
@@ -509,12 +522,10 @@
         return `
             <h2>管理者権限</h2>
             <div class="settings-card">
-                <div class="accordion-header" onclick="toggleAccordion('accAdm1')">
-                    <span>登録利用者一覧 (${accounts.length}名)</span><span>▼</span>
-                </div>
+                <div class="accordion-header" onclick="toggleAccordion('accAdm1')"><span>登録利用者一覧 (${accounts.length}名)</span><span>▼</span></div>
                 <div class="accordion-content" id="accAdm1">
                     <ul style="font-size:12px; color:#ffaaaa;">
-                        ${accounts.length === 0 ? '<li>登録アカウントはありません</li>' : accounts.map(a => `<li>${a.username} (${a.email}) [${a.role}] <button class="btn-custom" style="padding:2px 4px;" onclick="alert('${a.username} をBANしました')">BAN</button></li>`).join('')}
+                        ${accounts.length === 0 ? '<li>登録アカウントはありません</li>' : accounts.map(a => `<li>${a.username} (${a.email}) [${a.role}] <button class="btn-custom" style="padding:2px 4px; width:auto;" onclick="alert('${a.username} をBANしました')">BAN</button></li>`).join('')}
                     </ul>
                 </div>
             </div>
@@ -525,18 +536,13 @@
         return `
             <h2>その他のツール</h2>
             <div class="settings-card">
-                <div class="accordion-header" onclick="toggleAccordion('accTool1')">
-                    <span>yuto-tube Lite ダウンロード</span><span>▼</span>
-                </div>
+                <div class="accordion-header" onclick="toggleAccordion('accTool1')"><span>yuto-tube Lite ダウンロード</span><span>▼</span></div>
                 <div class="accordion-content" id="accTool1">
-                    <a href="/lite.html" download="yuto-tube-lite.html" class="btn-custom" style="display:inline-block; text-decoration:none;">完全HTML版をダウンロード</a>
+                    <a href="/lite.html" download="yuto-tube-lite.html" class="btn-custom" style="display:inline-block; text-decoration:none; text-align:center;">完全HTML版をダウンロード</a>
                 </div>
             </div>
-
             <div class="settings-card">
-                <div class="accordion-header" onclick="toggleAccordion('accTool2')">
-                    <span>コードエディタ</span><span>▼</span>
-                </div>
+                <div class="accordion-header" onclick="toggleAccordion('accTool2')"><span>コードエディタ</span><span>▼</span></div>
                 <div class="accordion-content" id="accTool2">
                     <textarea class="editor-textarea" placeholder="HTML/CSS/JS を入力..."></textarea>
                     <button class="btn-custom" style="margin-top:6px;" onclick="alert('試行実行')">ブラウザ試行</button>
@@ -570,7 +576,7 @@
                 <div class="settings-card">
                     <div style="display:flex; justify-content:space-between; font-size:11px; color:#ff8888;">
                         <span>投稿者: ${item.author} [${item.role}] | ${item.time} | 【${item.category}】</span>
-                        ${canDelete ? `<button class="btn-custom" style="padding:2px 6px;" onclick="deleteAnnouncement(${item.id})">削除</button>` : ''}
+                        ${canDelete ? `<button class="btn-custom" style="padding:2px 6px; width:auto;" onclick="deleteAnnouncement(${item.id})">削除</button>` : ''}
                     </div>
                     <h3 style="margin:6px 0 4px; color:#ff4444;">${item.title}</h3>
                     <p style="font-size:12px; color:#ffcccc;">${item.content}</p>
@@ -708,7 +714,7 @@
         document.getElementById('authSection').style.display = 'none';
         document.getElementById('app-wrapper').style.display = 'block';
         document.getElementById('displayUsername').textContent = `${userData.username} [${userData.role}]`;
-        selectGenre('ホーム', 'Roblox');
+        selectGenre('ホーム', 'YouTube 日本 急上昇');
     }
 
     function handleLogout() {
