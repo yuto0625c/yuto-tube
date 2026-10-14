@@ -11,14 +11,13 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// APIキー設定
+// APIキー
 const ZERNIO_KEY = 'sk_8cdd9f1b464da95c5304265a5dfe5d763d15c8d11959a3d7f2bb61110dcfffb1';
 const RAPID_KEY = '06f80e788fmsh4eefadddda0191dp186eb9jsn7a0f63c0eebb';
 
-// 1. 通常長尺動画検索 (ショート排除 & 動的検索)
+// 通常動画検索（長尺専用・Roblox固定排除）
 app.get('/api/search', async (req, res) => {
     const query = req.query.q || 'YouTube 日本 急上昇';
-    
     try {
         const response = await axios.get(`https://pipedapi.kavin.rocks/search?q=${encodeURIComponent(query)}&filter=videos`, { timeout: 5000 });
         const results = response.data.items
@@ -34,20 +33,19 @@ app.get('/api/search', async (req, res) => {
                     thumbnail: `https://wsrv.nl/?url=https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
                 };
             });
-        
         if (results.length > 0) return res.json({ success: true, videos: results });
     } catch (e) {}
 
     res.json({
         success: true,
         videos: [
-            { id: "L_LUpnjgPso", title: `${query} - トレンド動画 #1`, author: "公式チャンネル", views: "120万回", publishedText: "最近", thumbnail: "https://wsrv.nl/?url=https://i.ytimg.com/vi/L_LUpnjgPso/hqdefault.jpg" },
-            { id: "3JZ_D3ELwOQ", title: `${query} - おすすめ動画 #2`, author: "マエスケ", views: "85万回", publishedText: "最近", thumbnail: "https://wsrv.nl/?url=https://i.ytimg.com/vi/3JZ_D3ELwOQ/hqdefault.jpg" }
+            { id: "L_LUpnjgPso", title: `${query} - おすすめ動画 #1`, author: "公式チャンネル", views: "120万回", thumbnail: "https://wsrv.nl/?url=https://i.ytimg.com/vi/L_LUpnjgPso/hqdefault.jpg" },
+            { id: "3JZ_D3ELwOQ", title: `${query} - おすすめ動画 #2`, author: "マエスケ", views: "85万回", thumbnail: "https://wsrv.nl/?url=https://i.ytimg.com/vi/3JZ_D3ELwOQ/hqdefault.jpg" }
         ]
     });
 });
 
-// 2. ショート専用API (60秒以下縦動画のみ)
+// ショート動画専用取得
 app.get('/api/shorts', async (req, res) => {
     try {
         const response = await axios.get(`https://pipedapi.kavin.rocks/search?q=shorts&filter=videos`, { timeout: 5000 });
@@ -64,7 +62,7 @@ app.get('/api/shorts', async (req, res) => {
     res.json({
         success: true,
         shorts: [
-            { id: "dQw4w9WgXcQ", title: "バズりショート動画 #1", author: "Shorts Creator" }
+            { id: "dQw4w9WgXcQ", title: "神業ショート動画", author: "Shorts Creator" }
         ]
     });
 });
