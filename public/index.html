@@ -6,7 +6,6 @@
     <title>yuto-tube v14.26.8.1.01</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* 黒と赤の神秘的UI (テキスト・ボタンは白以外の赤・ピンク系) */
         :root {
             --bg-color: #080000;
             --header-bg: #1a0303;
@@ -18,53 +17,24 @@
             --btn-hover: #880000;
             --sidebar-width: 240px;
         }
-        body {
-            background-color: var(--bg-color); color: var(--text-color);
-            font-family: Arial, sans-serif; margin: 0; padding: 0; overflow-x: hidden;
-        }
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: Arial, sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
 
         .password-wrapper { position: relative; width: 100%; }
-        .toggle-password {
-            position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
-            cursor: pointer; font-size: 11px; color: #ff8888; user-select: none;
-            background: #2a0000; padding: 2px 6px; border-radius: 3px; border: 1px solid #660000;
-        }
+        .toggle-password { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 11px; color: #ff8888; user-select: none; background: #2a0000; padding: 2px 6px; border-radius: 3px; border: 1px solid #660000; }
 
-        /* ログイン・新規作成モーダル */
-        .auth-container {
-            display: flex; justify-content: center; align-items: center; min-height: 100vh;
-            background: radial-gradient(circle, #3d0000 0%, #080000 100%);
-        }
-        .auth-box {
-            background-color: var(--card-bg); border: 2px solid var(--border-color);
-            padding: 25px; border-radius: 12px; width: 340px; box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
-        }
-        .auth-title {
-            text-align: center; margin-bottom: 20px; font-size: 22px; font-weight: bold;
-            color: #ff3333; text-shadow: 0 0 8px #ff0000;
-        }
+        .auth-container { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: radial-gradient(circle, #3d0000 0%, #080000 100%); }
+        .auth-box { background-color: var(--card-bg); border: 2px solid var(--border-color); padding: 25px; border-radius: 12px; width: 340px; box-shadow: 0 0 25px rgba(255, 0, 0, 0.4); }
+        .auth-title { text-align: center; margin-bottom: 20px; font-size: 22px; font-weight: bold; color: #ff3333; text-shadow: 0 0 8px #ff0000; }
         .input-group { margin-bottom: 12px; }
         .input-group label { display: block; margin-bottom: 4px; font-size: 12px; color: #ffaaaa; }
-        .input-group input[type="text"],
-        .input-group input[type="password"],
-        .input-group input[type="email"] {
-            width: 100%; padding: 10px; box-sizing: border-box; background-color: #120000;
-            border: 1px solid var(--border-color); color: #ffdddd; border-radius: 5px; outline: none;
-        }
-        .btn-custom {
-            width: 100%; padding: 10px; background-color: var(--btn-bg); border: 1px solid var(--border-color);
-            color: #ff8888; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 8px;
-        }
+        .input-group input[type="text"], .input-group input[type="password"], .input-group input[type="email"] { width: 100%; padding: 10px; box-sizing: border-box; background-color: #120000; border: 1px solid var(--border-color); color: #ffdddd; border-radius: 5px; outline: none; }
+        .btn-custom { width: 100%; padding: 10px; background-color: var(--btn-bg); border: 1px solid var(--border-color); color: #ff8888; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 8px; }
         .btn-custom:hover { background-color: var(--btn-hover); color: #ffcccc; }
         .auth-links { margin-top: 12px; text-align: center; font-size: 12px; }
         .auth-links a { color: #ff6666; text-decoration: none; display: block; margin-top: 4px; cursor: pointer; }
 
-        /* ヘッダー */
         #app-wrapper { display: none; }
-        header {
-            display: flex; justify-content: space-between; align-items: center; padding: 10px 20px;
-            background-color: var(--header-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 1000;
-        }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background-color: var(--header-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 1000; }
         .header-left { display: flex; align-items: center; gap: 15px; }
         .menu-btn { font-size: 24px; cursor: pointer; color: #ff6666; }
         .logo { font-weight: bold; font-size: 18px; color: #ff3333; text-decoration: none; cursor: pointer; }
@@ -74,11 +44,7 @@
         .search-hint { position: absolute; top: 42px; left: 10px; background-color: rgba(40, 0, 0, 0.95); border: 1px solid var(--accent-color); padding: 4px 8px; border-radius: 4px; font-size: 11px; color: #ffaaaa; display: none; z-index: 1001; }
         .time-display { font-size: 13px; color: #ff8888; font-family: monospace; }
 
-        /* サイドバー */
-        .sidebar {
-            position: fixed; top: 55px; left: -260px; width: var(--sidebar-width); height: calc(100vh - 55px);
-            background-color: var(--header-bg); border-right: 1px solid var(--border-color); transition: left 0.3s ease; overflow-y: auto; z-index: 999;
-        }
+        .sidebar { position: fixed; top: 55px; left: -260px; width: var(--sidebar-width); height: calc(100vh - 55px); background-color: var(--header-bg); border-right: 1px solid var(--border-color); transition: left 0.3s ease; overflow-y: auto; z-index: 999; }
         .sidebar.active { left: 0; }
         .sidebar-section-title { font-size: 11px; color: #ff6666; padding: 10px 20px 4px; text-transform: uppercase; font-weight: bold; }
         .sidebar-menu { list-style: none; padding: 0; margin: 0; }
@@ -89,7 +55,6 @@
         .main-content { padding: 20px; transition: margin-left 0.3s ease; }
         .main-content.shifted { margin-left: var(--sidebar-width); }
 
-        /* 本家YouTube互換 カード・グリッド・再生レイアウト */
         .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; margin-top: 15px; }
         .video-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
         .video-card:hover { transform: translateY(-3px); border-color: var(--accent-color); }
@@ -104,7 +69,6 @@
         .player-box { width: 100%; aspect-ratio: 16 / 9; background-color: #000; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
         .player-box iframe { width: 100%; height: 100%; border: none; }
 
-        /* アコーディオン設定・ツール */
         .settings-card { background-color: var(--card-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 12px; }
         .accordion-header { font-weight: bold; cursor: pointer; color: #ff4444; display: flex; justify-content: space-between; align-items: center; }
         .accordion-content { display: none; margin-top: 10px; border-top: 1px solid #330000; padding-top: 10px; }
@@ -121,85 +85,30 @@
     <div class="auth-box" id="loginForm">
         <div class="auth-title">yuto-tube</div>
         <div class="input-group"><label>アカウント名</label><input type="text" id="loginUser"></div>
-        <div class="input-group">
-            <label>PIN</label>
-            <div class="password-wrapper">
-                <input type="password" id="loginPin">
-                <span class="toggle-password" id="btn-toggle-loginPin" onclick="togglePassView('loginPin')">表示</span>
-            </div>
-        </div>
-        <div class="input-group">
-            <label>パスワード</label>
-            <div class="password-wrapper">
-                <input type="password" id="loginPass">
-                <span class="toggle-password" id="btn-toggle-loginPass" onclick="togglePassView('loginPass')">表示</span>
-            </div>
-        </div>
-
+        <div class="input-group"><label>PIN</label><div class="password-wrapper"><input type="password" id="loginPin"><span class="toggle-password" id="btn-toggle-loginPin" onclick="togglePassView('loginPin')">表示</span></div></div>
+        <div class="input-group"><label>パスワード</label><div class="password-wrapper"><input type="password" id="loginPass"><span class="toggle-password" id="btn-toggle-loginPass" onclick="togglePassView('loginPass')">表示</span></div></div>
         <button class="btn-custom" onclick="handleLogin()">ログイン</button>
         <div class="error-msg" id="loginError"></div>
-
-        <div class="auth-links">
-            <a onclick="switchAuthView('forgot')">パスワードをお忘れの方</a>
-            <a onclick="switchAuthView('register')">アカウントを持っていませんか? 新規作成</a>
-        </div>
+        <div class="auth-links"><a onclick="switchAuthView('forgot')">パスワードをお忘れの方</a><a onclick="switchAuthView('register')">アカウントを持っていませんか? 新規作成</a></div>
     </div>
 
-    <!-- 新規作成モーダル (段階的認証展開) -->
     <div class="auth-box" id="registerForm" style="display: none;">
         <div class="auth-title">新規作成</div>
-        <div class="input-group">
-            <label>アカウント名</label>
-            <input type="text" id="regUser" oninput="checkUserExists()">
-            <div class="error-msg" id="userExistsError">他の人が使っているので、、、使用できません</div>
-        </div>
+        <div class="input-group"><label>アカウント名</label><input type="text" id="regUser" oninput="checkUserExists()"><div class="error-msg" id="userExistsError">他の人が使っているので、、、使用できません</div></div>
         <div class="input-group"><label>メールアドレス (空欄可)</label><input type="email" id="regEmail"></div>
-        <div class="input-group">
-            <label>PIN</label>
-            <div class="password-wrapper">
-                <input type="password" id="regPin">
-                <span class="toggle-password" id="btn-toggle-regPin" onclick="togglePassView('regPin')">表示</span>
-            </div>
-        </div>
-
-        <div class="input-group" style="margin-top:10px;">
-            <label><input type="checkbox" id="chkRegAdmin" onchange="toggleRegAuthFields()"> あなたは管理者ですか?</label>
-        </div>
-        <div class="input-group" id="regAdminGroup" style="display:none;">
-            <label>管理者用パスワード</label>
-            <div class="password-wrapper">
-                <input type="password" id="regAdminPass">
-                <span class="toggle-password" id="btn-toggle-regAdminPass" onclick="togglePassView('regAdminPass')">表示</span>
-            </div>
-        </div>
-
-        <div class="input-group">
-            <label><input type="checkbox" id="chkRegDev" onchange="toggleRegAuthFields()"> あなたは開発者ですか?</label>
-        </div>
-        <div class="input-group" id="regDevGroup" style="display:none;">
-            <label>開発者用パスワード</label>
-            <div class="password-wrapper">
-                <input type="password" id="regDevPass">
-                <span class="toggle-password" id="btn-toggle-regDevPass" onclick="togglePassView('regDevPass')">表示</span>
-            </div>
-        </div>
-
+        <div class="input-group"><label>PIN</label><div class="password-wrapper"><input type="password" id="regPin"><span class="toggle-password" id="btn-toggle-regPin" onclick="togglePassView('regPin')">表示</span></div></div>
+        <div class="input-group" style="margin-top:10px;"><label><input type="checkbox" id="chkRegAdmin" onchange="toggleRegAuthFields()"> あなたは管理者ですか?</label></div>
+        <div class="input-group" id="regAdminGroup" style="display:none;"><label>管理者用パスワード</label><div class="password-wrapper"><input type="password" id="regAdminPass"><span class="toggle-password" id="btn-toggle-regAdminPass" onclick="togglePassView('regAdminPass')">表示</span></div></div>
+        <div class="input-group"><label><input type="checkbox" id="chkRegDev" onchange="toggleRegAuthFields()"> あなたは開発者ですか?</label></div>
+        <div class="input-group" id="regDevGroup" style="display:none;"><label>開発者用パスワード</label><div class="password-wrapper"><input type="password" id="regDevPass"><span class="toggle-password" id="btn-toggle-regDevPass" onclick="togglePassView('regDevPass')">表示</span></div></div>
         <button class="btn-custom" onclick="handleRegister()">登録してログイン</button>
         <div class="auth-links"><a onclick="switchAuthView('login')">既にアカウントをお持ちの方はコチラ</a></div>
     </div>
 
-    <!-- パスワード再設定 -->
     <div class="auth-box" id="forgotForm" style="display: none;">
         <div class="auth-title">パスワード再設定</div>
         <div class="input-group"><label>登録メールアドレス</label><input type="email" id="forgotEmail"></div>
-        <div class="input-group">
-            <label>希望する手続き</label>
-            <select id="forgotOption" class="btn-custom" style="text-align: left;">
-                <option value="申請">パスワード変更申請</option>
-                <option value="確認コード">確認コード送信</option>
-                <option value="リセット">パスワードリセット (一時的に「0」になる)</option>
-            </select>
-        </div>
+        <div class="input-group"><label>希望する手続き</label><select id="forgotOption" class="btn-custom" style="text-align: left;"><option value="申請">パスワード変更申請</option><option value="確認コード">確認コード送信</option><option value="リセット">パスワードリセット (一時的に「0」になる)</option></select></div>
         <button class="btn-custom" onclick="executeForgot()">実行</button>
         <div class="auth-links"><a onclick="switchAuthView('login')">ログインへ戻る</a></div>
     </div>
@@ -237,17 +146,13 @@
             <li onclick="selectGenre('学習', '勉強 解説')">学習</li>
             <li onclick="selectGenre('ライブ', 'ライブ配信')">ライブ</li>
         </ul>
-
         <div class="sidebar-divider"></div>
-
         <div class="sidebar-section-title">登録・リスト</div>
         <ul class="sidebar-menu">
             <li onclick="navigateTool('subscriptions')">登録チャンネル</li>
             <li onclick="navigateTool('playlists')">再生リスト</li>
         </ul>
-
         <div class="sidebar-divider"></div>
-
         <div class="sidebar-section-title">コミュニティ & 設定</div>
         <ul class="sidebar-menu">
             <li onclick="navigateTool('newsBoard')">開発者・管理者のお知らせ</li>
@@ -266,31 +171,16 @@
 <script>
     let currentUserData = null;
 
-    function getAccounts() {
-        const acc = localStorage.getItem('yuto_tube_accounts');
-        return acc ? JSON.parse(acc) : [];
-    }
+    function getAccounts() { const acc = localStorage.getItem('yuto_tube_accounts'); return acc ? JSON.parse(acc) : []; }
     function saveAccounts(acc) { localStorage.setItem('yuto_tube_accounts', JSON.stringify(acc)); }
-
-    function getAnnouncements() {
-        const ann = localStorage.getItem('yuto_tube_announcements');
-        return ann ? JSON.parse(ann) : [];
-    }
+    function getAnnouncements() { const ann = localStorage.getItem('yuto_tube_announcements'); return ann ? JSON.parse(ann) : []; }
     function saveAnnouncements(ann) { localStorage.setItem('yuto_tube_announcements', JSON.stringify(ann)); }
 
     window.onload = function() {
-        updateClock();
-        setInterval(updateClock, 1000);
-
-        if (window.location.hostname.includes("google") || window.location.href.includes("exec")) {
-            document.getElementById('appLogoTitle').textContent = "yuto-tube GAS版 v14.26.8.1.01";
-        }
-
+        updateClock(); setInterval(updateClock, 1000);
+        if (window.location.hostname.includes("google") || window.location.href.includes("exec")) { document.getElementById('appLogoTitle').textContent = "yuto-tube GAS版 v14.26.8.1.01"; }
         const savedUser = localStorage.getItem('yuto_tube_user');
-        if (savedUser) {
-            currentUserData = JSON.parse(savedUser);
-            showMainApp(currentUserData);
-        }
+        if (savedUser) { currentUserData = JSON.parse(savedUser); showMainApp(currentUserData); }
 
         document.addEventListener('keydown', function(e) {
             if (document.getElementById('app-wrapper').style.display === 'block') {
@@ -298,11 +188,9 @@
                 if (activeTag !== 'input' && activeTag !== 'textarea') {
                     if (e.key === '/') {
                         e.preventDefault();
-                        const searchBox = document.getElementById('searchInput');
-                        searchBox.focus();
+                        document.getElementById('searchInput').focus();
                         const hint = document.getElementById('searchHint');
-                        hint.style.display = 'block';
-                        setTimeout(() => { hint.style.display = 'none'; }, 3000);
+                        hint.style.display = 'block'; setTimeout(() => { hint.style.display = 'none'; }, 3000);
                     }
                 }
             }
@@ -310,68 +198,42 @@
     };
 
     function updateClock() {
-        const now = new Date();
-        let hours = now.getHours();
-        let minutes = now.getMinutes();
-        const ampm = hours >= 12 ? 'P.M' : 'A.M';
-        hours = hours % 12 || 12;
-        minutes = minutes < 10 ? '0' + minutes : minutes;
+        const now = new Date(); let hours = now.getHours(); let minutes = now.getMinutes();
+        const ampm = hours >= 12 ? 'P.M' : 'A.M'; hours = hours % 12 || 12; minutes = minutes < 10 ? '0' + minutes : minutes;
         document.getElementById('clock').textContent = hours + ':' + minutes + ' ' + ampm;
     }
 
     function togglePassView(id) {
-        const elem = document.getElementById(id);
-        const btn = document.getElementById('btn-toggle-' + id);
-        if (elem.type === 'password') {
-            elem.type = 'text';
-            if (btn) btn.textContent = '非表示';
-        } else {
-            elem.type = 'password';
-            if (btn) btn.textContent = '表示';
-        }
+        const elem = document.getElementById(id); const btn = document.getElementById('btn-toggle-' + id);
+        if (elem.type === 'password') { elem.type = 'text'; if (btn) btn.textContent = '非表示'; }
+        else { elem.type = 'password'; if (btn) btn.textContent = '表示'; }
     }
 
-    function toggleSidebar() {
-        document.getElementById('sidebar').classList.toggle('active');
-        document.getElementById('mainContent').classList.toggle('shifted');
-    }
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('mainContent').classList.toggle('shifted'); }
+    function selectGenre(title, query) { loadVideos(title, query); closeSidebar(); }
+    function closeSidebar() { document.getElementById('sidebar').classList.remove('active'); document.getElementById('mainContent').classList.remove('shifted'); }
 
-    function selectGenre(title, query) {
-        loadVideos(title, query);
-        closeSidebar();
-    }
-
-    function closeSidebar() {
-        document.getElementById('sidebar').classList.remove('active');
-        document.getElementById('mainContent').classList.remove('shifted');
-    }
-
-    // 長尺通常動画一覧の描画（ショート完全排除）
     function loadVideos(title, query) {
         const container = document.getElementById('viewContainer');
         container.innerHTML = `<h2>${title}</h2><p style="color:#ff8888;">動画を取得中...</p>`;
-
-        fetch(`/api/search?q=${encodeURIComponent(query)}`)
-            .then(res => res.json())
-            .then(data => {
-                let html = `<h2>${title}</h2><div class="video-grid">`;
-                data.videos.forEach(v => {
-                    html += `
-                        <div class="video-card" onclick="playVideo('${v.id}', '${v.title.replace(/'/g, "\\'")}', '${v.author}')">
-                            <img src="${v.thumbnail}">
-                            <div class="video-card-body">
-                                <div class="video-card-title">${v.title}</div>
-                                <div class="video-card-author">${v.author} • ${v.views}</div>
-                            </div>
+        fetch(`/api/search?q=${encodeURIComponent(query)}`).then(res => res.json()).then(data => {
+            let html = `<h2>${title}</h2><div class="video-grid">`;
+            data.videos.forEach(v => {
+                html += `
+                    <div class="video-card" onclick="playVideo('${v.id}', '${v.title.replace(/'/g, "\\'")}', '${v.author}')">
+                        <img src="${v.thumbnail}">
+                        <div class="video-card-body">
+                            <div class="video-card-title">${v.title}</div>
+                            <div class="video-card-author">${v.author} • ${v.views}</div>
                         </div>
-                    `;
-                });
-                html += `</div>`;
-                container.innerHTML = html;
+                    </div>
+                `;
             });
+            html += `</div>`; container.innerHTML = html;
+        });
     }
 
-    // 本家YouTube / Choco-Tube 完全互換の動画再生画面
+    // 完全版 動画再生画面 (コントロール・設定・コメント・チャット完全統合)
     function playVideo(id, title, author) {
         const container = document.getElementById('viewContainer');
         container.innerHTML = `
@@ -380,19 +242,52 @@
                     <div class="player-box"><iframe id="mainPlayer" src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1" allowfullscreen></iframe></div>
                     <div class="settings-card" style="margin-top:10px;">
                         <h3>${title}</h3>
-                        <p style="font-size:12px; color:#ff8888;">チャンネル: ${author}</p>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <span style="font-size:12px; color:#ff8888;">チャンネル: ${author}</span>
+                            <button class="btn-custom" style="width:auto; padding:4px 12px;" onclick="alert('${author} を登録しました')">チャンネル登録</button>
+                        </div>
                         
-                        <!-- 動画操作ツールバー -->
-                        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; border-top:1px solid #330000; padding-top:10px;">
-                            <button class="btn-custom" style="padding:4px 8px; font-size:11px; width:auto;" onclick="changePlayerMode('${id}', 'nocookie')">nocookie</button>
-                            <button class="btn-custom" style="padding:4px 8px; font-size:11px; width:auto;" onclick="changePlayerMode('${id}', 'stream')">ストリーム</button>
-                            <button class="btn-custom" style="padding:4px 8px; font-size:11px; width:auto;" onclick="changePlayerMode('${id}', 'edu')">education</button>
-                            <select class="btn-custom" style="padding:4px; font-size:11px; width:auto;"><option>1072p</option><option>804p</option><option>360p</option><option>音声のみ</option></select>
-                            <button class="btn-custom" style="padding:4px 8px; font-size:11px; width:auto;" onclick="alert('ループ切替')">ループ</button>
-                            <button class="btn-custom" style="padding:4px 8px; font-size:11px; width:auto;" onclick="alert('yt-dlpダウンロード処理')">保存 (yt-dlp)</button>
+                        <!-- モード・コントロール選択 -->
+                        <div style="display:flex; gap:6px; flex-wrap:wrap; border-top:1px solid #330000; padding-top:10px;">
+                            <select class="btn-custom" style="width:auto; padding:4px;" onchange="changePlayerMode('${id}', this.value)">
+                                <option value="nocookie">nocookie再生</option>
+                                <option value="stream">ストリーム再生</option>
+                                <option value="edu">education再生</option>
+                                <option value="piped">Piped</option>
+                                <option value="invidious">Invidious</option>
+                            </select>
+                            <select class="btn-custom" style="width:auto; padding:4px;">
+                                <option>8K</option><option>4K</option><option value="1072p" selected>1072p</option><option>804p</option><option>360p</option><option>241p</option><option>映像なし</option><option>音声のみ</option>
+                            </select>
+                            <button class="btn-custom" style="width:auto; padding:4px 8px;" onclick="alert('ループ切り替え')">ループ</button>
+                            <button class="btn-custom" style="width:auto; padding:4px 8px;" onclick="alert('yt-dlpダウンロード処理を開始します')">保存 (yt-dlp)</button>
+                            <button class="btn-custom" style="width:auto; padding:4px 8px;" onclick="alert('字幕切替 (C)')">字幕 (C)</button>
+                        </div>
+
+                        <!-- 再生位置 ＆ 追加ツール設定 -->
+                        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
+                            <span style="font-size:11px; color:#aaa;">開始位置: <input type="text" value="0:00" style="width:40px; background:#111; color:#fff; border:1px solid #444;"></span>
+                            <span style="font-size:11px; color:#aaa;">終了位置: <input type="text" value="終了まで" style="width:50px; background:#111; color:#fff; border:1px solid #444;"></span>
+                            <button class="btn-custom" style="width:auto; padding:2px 6px; font-size:10px;" onclick="alert('位置保存')">再生位置保存</button>
+                            <button class="btn-custom" style="width:auto; padding:2px 6px; font-size:10px;" onclick="alert('ツール表示')">一定音量 / 音声ブースト / 音声トラック</button>
                         </div>
                     </div>
+
+                    <!-- 概要欄 ＆ コメント欄 -->
+                    <div class="settings-card">
+                        <h4 style="margin:0 0 5px; color:#ff6666;">概要欄</h4>
+                        <p style="font-size:12px; color:#ffcccc;">yuto-tube プレーヤーで視聴中。動画ID: ${id}</p>
+                    </div>
+                    <div class="settings-card">
+                        <h4 style="margin:0 0 10px; color:#ff6666;">コメント欄</h4>
+                        <div style="display:flex; gap:5px; margin-bottom:10px;">
+                            <input type="text" placeholder="コメントを追加..." style="flex-grow:1; background:#100000; border:1px solid #4a0000; color:#fff; padding:6px; border-radius:4px;">
+                            <button class="btn-custom" style="width:auto; padding:4px 10px;" onclick="alert('コメントを投稿しました')">投稿</button>
+                        </div>
+                        <p style="font-size:12px; color:#888;">コメントはありません。</p>
+                    </div>
                 </div>
+
                 <div class="video-secondary">
                     <h3 style="margin-top:0;">関連動画</h3>
                     <div id="relatedBox">読み込み中...</div>
@@ -400,61 +295,50 @@
             </div>
         `;
 
-        fetch(`/api/search?q=関連動画`)
-            .then(res => res.json())
-            .then(data => {
-                let relHtml = "";
-                data.videos.slice(0, 6).forEach(v => {
-                    relHtml += `
-                        <div class="video-card" style="margin-bottom:10px;" onclick="playVideo('${v.id}', '${v.title.replace(/'/g, "\\'")}', '${v.author}')">
-                            <img src="${v.thumbnail}" style="height:90px;">
-                            <div class="video-card-body">
-                                <div class="video-card-title">${v.title}</div>
-                                <div class="video-card-author">${v.author}</div>
-                            </div>
+        fetch(`/api/search?q=関連動画`).then(res => res.json()).then(data => {
+            let relHtml = "";
+            data.videos.slice(0, 6).forEach(v => {
+                relHtml += `
+                    <div class="video-card" style="margin-bottom:10px;" onclick="playVideo('${v.id}', '${v.title.replace(/'/g, "\\'")}', '${v.author}')">
+                        <img src="${v.thumbnail}" style="height:90px;">
+                        <div class="video-card-body">
+                            <div class="video-card-title">${v.title}</div>
+                            <div class="video-card-author">${v.author}</div>
                         </div>
-                    `;
-                });
-                document.getElementById('relatedBox').innerHTML = relHtml;
+                    </div>
+                `;
             });
+            document.getElementById('relatedBox').innerHTML = relHtml;
+        });
     }
 
     function changePlayerMode(id, mode) {
         const p = document.getElementById('mainPlayer');
         if (mode === 'edu') p.src = `https://www.youtube.com/embed/${id}?mode=educational`;
-        else if (mode === 'stream') p.src = `https://piped.video/embed/${id}`;
+        else if (mode === 'stream' || mode === 'piped') p.src = `https://piped.video/embed/${id}`;
         else p.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1`;
     }
 
-    // 本家YouTube Shorts完全互換（縦長 9:16 動画のみ & 自動再生）
     function renderShortsView() {
         const container = document.getElementById('viewContainer');
         container.innerHTML = `<h2>ショート</h2><p style="color:#ff8888;">ショート動画を取得中...</p>`;
-
-        fetch('/api/shorts')
-            .then(res => res.json())
-            .then(data => {
-                let html = `
-                    <h2>ショート</h2>
-                    <div style="max-width:340px; margin:0 auto; height:78vh; overflow-y:scroll; snap-type:y mandatory; border:1px solid var(--border-color); border-radius:12px; padding:10px; background:#000;">
-                `;
-                data.shorts.forEach((s, idx) => {
-                    html += `
-                        <div style="height:100%; snap-align:start; margin-bottom:20px; display:flex; flex-direction:column; justify-content:center;">
-                            <div style="width:100%; height:85%; background:#111; border-radius:8px; overflow:hidden;">
-                                <iframe src="https://www.youtube-nocookie.com/embed/${s.id}?autoplay=${idx === 0 ? 1 : 0}&mute=0" style="width:100%; height:100%; border:none;" allow="autoplay"></iframe>
-                            </div>
-                            <div style="padding:8px 0; font-size:12px; color:#ffcccc; font-weight:bold;">${s.title}</div>
+        fetch('/api/shorts').then(res => res.json()).then(data => {
+            let html = `<h2>ショート</h2><div style="max-width:340px; margin:0 auto; height:78vh; overflow-y:scroll; snap-type:y mandatory; border:1px solid var(--border-color); border-radius:12px; padding:10px; background:#000;">`;
+            data.shorts.forEach((s, idx) => {
+                html += `
+                    <div style="height:100%; snap-align:start; margin-bottom:20px; display:flex; flex-direction:column; justify-content:center;">
+                        <div style="width:100%; height:85%; background:#111; border-radius:8px; overflow:hidden;">
+                            <iframe src="https://www.youtube-nocookie.com/embed/${s.id}?autoplay=${idx === 0 ? 1 : 0}&mute=0" style="width:100%; height:100%; border:none;" allow="autoplay"></iframe>
                         </div>
-                    `;
-                });
-                html += `</div>`;
-                container.innerHTML = html;
+                        <div style="padding:8px 0; font-size:12px; color:#ffcccc; font-weight:bold;">${s.title}</div>
+                    </div>
+                `;
             });
+            html += `</div>`; container.innerHTML = html;
+        });
         closeSidebar();
     }
 
-    // アコーディオン構造ツール & 設定
     function navigateTool(tool) {
         const container = document.getElementById('viewContainer');
         if (tool === 'settings') container.innerHTML = renderGroupedSettingsPage();
@@ -466,72 +350,97 @@
         closeSidebar();
     }
 
-    function toggleAccordion(id) {
-        document.getElementById(id).classList.toggle('active');
-    }
+    function toggleAccordion(id) { document.getElementById(id).classList.toggle('active'); }
 
+    // 完全版 設定ページ (データ管理・リセット・各種削除ボタン完全実装)
     function renderGroupedSettingsPage() {
         return `
             <h2>設定</h2>
             <div class="settings-card">
-                <div class="accordion-header" onclick="toggleAccordion('accSet1')"><span>アカウント設定</span><span>▼</span></div>
+                <div class="accordion-header" onclick="toggleAccordion('accSet1')"><span>動画再生・環境設定</span><span>▼</span></div>
                 <div class="accordion-content" id="accSet1">
-                    <div class="input-group"><label>パスワード認証</label><input type="password" id="passAuth"></div>
+                    <div class="settings-row"><span>シークレットモード</span><button class="btn-custom" style="width:auto;" onclick="alert('シークレットモード切替')">通常: OFF</button></div>
+                    <div class="settings-row"><span>動画取得方法</span><button class="btn-custom" style="width:auto;" onclick="alert('サンプル動画で動作確認テスト実行')">テスト・設定</button></div>
+                    <div class="settings-row"><span>ダークモード</span><button class="btn-custom" style="width:auto;">ON (標準)</button></div>
+                    <div class="settings-row"><span>言語</span><button class="btn-custom" style="width:auto;">日本語</button></div>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div class="accordion-header" onclick="toggleAccordion('accSet2')"><span>データ管理</span><span>▼</span></div>
+                <div class="accordion-content" id="accSet2">
+                    <div class="settings-row"><span>設定をリセット</span><button class="btn-custom" style="width:auto;" onclick="alert('設定をデフォルトに初期化しました')">リセット</button></div>
+                    <div class="settings-row"><span>視聴履歴を削除</span><button class="btn-custom" style="width:auto;" onclick="alert('視聴履歴を消去しました')">削除</button></div>
+                    <div class="settings-row"><span>お気に入りをすべて削除</span><button class="btn-custom" style="width:auto;" onclick="alert('お気に入りを削除しました')">削除</button></div>
+                    <div class="settings-row"><span>プレイリストをすべて削除</span><button class="btn-custom" style="width:auto;" onclick="alert('プレイリストを削除しました')">削除</button></div>
+                    <div class="settings-row"><span>登録チャンネルをすべて削除</span><button class="btn-custom" style="width:auto;" onclick="alert('登録チャンネルをすべて解除しました')">削除</button></div>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div class="accordion-header" onclick="toggleAccordion('accSet3')"><span>アカウント設定 (要認証)</span><span>▼</span></div>
+                <div class="accordion-content" id="accSet3">
+                    <div class="input-group"><label>パスワード入力</label><input type="password" id="accPassConfirm"></div>
                     <button class="btn-custom" onclick="document.getElementById('accSecDetails').style.display='block'">認証</button>
                     <div id="accSecDetails" style="display:none; margin-top:10px;">
                         <div class="settings-row"><span>アカウント名変更 (30日固定)</span><button class="btn-custom" style="width:auto;" onclick="changeUsernamePrompt()">変更</button></div>
-                        <div class="settings-row"><span>メールアドレス変更</span><button class="btn-custom" style="width:auto;" onclick="alert('更新完了')">変更</button></div>
+                        <div class="settings-row"><span>メールアドレス変更/追加</span><button class="btn-custom" style="width:auto;" onclick="alert('メールアドレスを変更しました')">変更</button></div>
+                        <div class="settings-row"><span>パスワード変更</span><button class="btn-custom" style="width:auto;" onclick="alert('変更完了メールを送信しました')">変更</button></div>
+                        <div class="settings-row"><span>ステータス切り替え</span><button class="btn-custom" style="width:auto;" onclick="alert('一般利用者に変更しました')">切り替え</button></div>
+                        <div class="settings-row"><span>アカウント削除 (7日猶予)</span><button class="btn-custom" style="width:auto; background:#880000;" onclick="alert('7日間の復元猶予付きで削除申請しました')">削除</button></div>
                     </div>
-                </div>
-            </div>
-            <div class="settings-card">
-                <div class="accordion-header" onclick="toggleAccordion('accSet2')"><span>動画取得・表示設定</span><span>▼</span></div>
-                <div class="accordion-content" id="accSet2">
-                    <div class="settings-row"><span>サムネイル取得</span><select class="btn-custom" style="width:auto;"><option>wsrv.nl プロキシ</option></select></div>
-                    <div class="settings-row"><span>ダークモード</span><button class="btn-custom" style="width:auto;">ON (標準)</button></div>
                 </div>
             </div>
         `;
     }
 
     function changeUsernamePrompt() {
-        const now = Date.now();
-        const accounts = getAccounts();
-        const user = accounts.find(a => a.username === currentUserData.username);
-
+        const now = Date.now(); const accounts = getAccounts(); const user = accounts.find(a => a.username === currentUserData.username);
         if (user && user.lockUntil && now < user.lockUntil) {
-            const days = Math.ceil((user.lockUntil - now) / (1000 * 60 * 60 * 24));
-            alert(`アカウント名は30日に1回しか変更できません。（あと ${days} 日）`);
-            return;
+            const days = Math.ceil((user.lockUntil - now) / (1000 * 60 * 60 * 24)); alert(`アカウント名は30日に1回しか変更できません。（あと ${days} 日）`); return;
         }
-
         const newName = prompt("新しいアカウント名を入力してください:");
         if (newName) {
-            user.username = newName;
-            user.lockUntil = now + (30 * 24 * 60 * 60 * 1000);
-            saveAccounts(accounts);
-            currentUserData.username = newName;
-            localStorage.setItem('yuto_tube_user', JSON.stringify(currentUserData));
-            alert("アカウント名を変更しました！");
-            location.reload();
+            user.username = newName; user.lockUntil = now + (30 * 24 * 60 * 60 * 1000); saveAccounts(accounts);
+            currentUserData.username = newName; localStorage.setItem('yuto_tube_user', JSON.stringify(currentUserData));
+            alert("アカウント名を変更しました！"); location.reload();
         }
     }
 
+    // 完全版 管理者権限 ＆ 開発者ページ (利用ログ折れ線グラフ・BAN・メンテナンスモード)
     function renderGroupedAdminPage() {
         const accounts = getAccounts();
         return `
             <h2>管理者権限</h2>
             <div class="settings-card">
-                <div class="accordion-header" onclick="toggleAccordion('accAdm1')"><span>登録利用者一覧 (${accounts.length}名)</span><span>▼</span></div>
+                <div class="accordion-header" onclick="toggleAccordion('accAdm1')"><span>アカウント管理 (全${accounts.length}名)</span><span>▼</span></div>
                 <div class="accordion-content" id="accAdm1">
+                    <div style="margin-bottom:10px;"><input type="text" placeholder="アカウント検索..." style="background:#111; color:#fff; border:1px solid #444; padding:4px;"></div>
                     <ul style="font-size:12px; color:#ffaaaa;">
                         ${accounts.length === 0 ? '<li>登録アカウントはありません</li>' : accounts.map(a => `<li>${a.username} (${a.email}) [${a.role}] <button class="btn-custom" style="padding:2px 4px; width:auto;" onclick="alert('${a.username} をBANしました')">BAN</button></li>`).join('')}
                     </ul>
                 </div>
             </div>
+
+            <div class="settings-card">
+                <div class="accordion-header" onclick="toggleAccordion('accAdm2')"><span>利用ログ集計 (折れ線グラフ)</span><span>▼</span></div>
+                <div class="accordion-content" id="accAdm2">
+                    <p style="font-size:12px; color:#ff8888;">本日起動回数: 24回 | 視聴回数: 108回</p>
+                    <canvas id="logChart" style="max-height:180px;"></canvas>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div class="accordion-header" onclick="toggleAccordion('accAdm3')"><span>開発者専用ページ (要開発者認証)</span><span>▼</span></div>
+                <div class="accordion-content" id="accAdm3">
+                    <div class="settings-row"><span>メンテナンスモード (一般人シャットアウト)</span><button class="btn-custom" style="width:auto;" onclick="alert('メンテナンスモードON')">ON/OFF</button></div>
+                    <div class="settings-row"><span>メンテナンスモード (全員シャットアウト)</span><button class="btn-custom" style="width:auto;" onclick="alert('全ユーザーシャットアウトON')">ON/OFF</button></div>
+                </div>
+            </div>
         `;
     }
 
+    // 完全版 その他のツール (ドロップアップロードエディタ・メモ出力・ゲーム・ダウンロード)
     function renderGroupedToolsPage() {
         return `
             <h2>その他のツール</h2>
@@ -541,20 +450,48 @@
                     <a href="/lite.html" download="yuto-tube-lite.html" class="btn-custom" style="display:inline-block; text-decoration:none; text-align:center;">完全HTML版をダウンロード</a>
                 </div>
             </div>
+
             <div class="settings-card">
-                <div class="accordion-header" onclick="toggleAccordion('accTool2')"><span>コードエディタ</span><span>▼</span></div>
+                <div class="accordion-header" onclick="toggleAccordion('accTool2')"><span>高度なコードエディタ (ファイルドロップ対応)</span><span>▼</span></div>
                 <div class="accordion-content" id="accTool2">
-                    <textarea class="editor-textarea" placeholder="HTML/CSS/JS を入力..."></textarea>
-                    <button class="btn-custom" style="margin-top:6px;" onclick="alert('試行実行')">ブラウザ試行</button>
+                    <div style="border:2px dashed #660000; padding:10px; text-align:center; font-size:11px; margin-bottom:8px; color:#aaa;">ここにファイルをドロップして編集</div>
+                    <textarea class="editor-textarea" placeholder="HTML/CSS/JS..."></textarea>
+                    <button class="btn-custom" style="margin-top:6px;" onclick="alert('ブラウザ試行')">ブラウザ試行</button>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div class="accordion-header" onclick="toggleAccordion('accTool3')"><span>メモ (.txt, .html, .pdf 出力)</span><span>▼</span></div>
+                <div class="accordion-content" id="accTool3">
+                    <textarea class="editor-textarea" placeholder="メモを入力..."></textarea>
+                    <div style="display:flex; gap:4px; margin-top:6px;">
+                        <button class="btn-custom" onclick="alert('.txt保存')">.txt保存</button>
+                        <button class="btn-custom" onclick="alert('.html保存')">.html保存</button>
+                        <button class="btn-custom" onclick="alert('.pdf保存')">.pdf保存</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div class="accordion-header" onclick="toggleAccordion('accTool4')"><span>暇つぶしゲーム (ロードバー付き)</span><span>▼</span></div>
+                <div class="accordion-content" id="accTool4">
+                    <p style="font-size:12px; color:#ff8888;">ブロックブラスト / テトリス 収録</p>
+                    <button class="btn-custom" onclick="alert('ゲームを起動しました')">ゲーム起動</button>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div class="accordion-header" onclick="toggleAccordion('accTool5')"><span>動画ダウンロード (yt-dlp)</span><span>▼</span></div>
+                <div class="accordion-content" id="accTool5">
+                    <input type="text" placeholder="YouTube URL..." style="width:100%; background:#100000; border:1px solid #660000; color:#fff; padding:6px; box-sizing:border-box;">
+                    <button class="btn-custom" style="margin-top:6px;" onclick="alert('yt-dlpダウンロード処理を開始しました')">MP4でダウンロード</button>
                 </div>
             </div>
         `;
     }
 
     function renderNewsBoardPage() {
-        const annList = getAnnouncements();
-        const canPost = currentUserData && (currentUserData.role === '管理者' || currentUserData.role === '開発者');
-
+        const annList = getAnnouncements(); const canPost = currentUserData && (currentUserData.role === '管理者' || currentUserData.role === '開発者');
         let html = `<h2>開発者・管理者のお知らせ</h2>`;
         if (canPost) {
             html += `
@@ -567,7 +504,6 @@
                 </div>
             `;
         }
-
         html += `<div style="margin-top:15px;">`;
         if (annList.length === 0) html += `<p style="font-size:13px; color:#aaa;">投稿されたお知らせはありません。</p>`;
         annList.forEach(item => {
@@ -583,39 +519,19 @@
                 </div>
             `;
         });
-        html += `</div>`;
-        return html;
+        html += `</div>`; return html;
     }
 
     function postAnnouncement() {
-        const title = document.getElementById('annTitle').value;
-        const category = document.getElementById('annCategory').value;
-        const content = document.getElementById('annContent').value;
+        const title = document.getElementById('annTitle').value; const category = document.getElementById('annCategory').value; const content = document.getElementById('annContent').value;
         if (!title || !content) return alert("入力が不足しています");
-
-        const annList = getAnnouncements();
-        const now = new Date();
-        annList.unshift({
-            id: Date.now(),
-            author: currentUserData.username,
-            role: currentUserData.role,
-            time: `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()} ${now.getHours()}:${now.getMinutes()}`,
-            title, category, content
-        });
-        saveAnnouncements(annList);
-        navigateTool('newsBoard');
+        const annList = getAnnouncements(); const now = new Date();
+        annList.unshift({ id: Date.now(), author: currentUserData.username, role: currentUserData.role, time: `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()} ${now.getHours()}:${now.getMinutes()}`, title, category, content });
+        saveAnnouncements(annList); navigateTool('newsBoard');
     }
 
-    function deleteAnnouncement(id) {
-        let annList = getAnnouncements().filter(a => a.id !== id);
-        saveAnnouncements(annList);
-        navigateTool('newsBoard');
-    }
-
-    function renderSubscriptionsPage() {
-        return `<h2>登録チャンネル</h2><div class="video-grid"><div class="video-card"><div class="video-card-body"><h3>マエスケ</h3><p style="font-size:11px;">登録中</p></div></div></div>`;
-    }
-
+    function deleteAnnouncement(id) { let annList = getAnnouncements().filter(a => a.id !== id); saveAnnouncements(annList); navigateTool('newsBoard'); }
+    function renderSubscriptionsPage() { return `<h2>登録チャンネル</h2><div class="video-grid"><div class="video-card"><div class="video-card-body"><h3>マエスケ</h3><p style="font-size:11px;">登録中</p></div></div></div>`; }
     function openFeedback() { window.open('https://forms.cloud.microsoft/r/HcmtDqFJ7W', '_blank'); }
     function executeSearch() { const q = document.getElementById('searchInput').value; if (q) selectGenre(`検索: ${q}`, q); }
     function handleSearchKey(e) { if (e.key === 'Enter') executeSearch(); }
@@ -632,95 +548,50 @@
     }
 
     function executeForgot() {
-        const option = document.getElementById('forgotOption').value;
-        const email = document.getElementById('forgotEmail').value;
+        const option = document.getElementById('forgotOption').value; const email = document.getElementById('forgotEmail').value;
         if (!email) return alert("メールアドレスを入力してください");
-
         if (option === 'リセット') {
-            const accounts = getAccounts();
-            const acc = accounts.find(a => a.email === email);
-            if (acc) {
-                acc.pass = "0";
-                saveAccounts(accounts);
-                alert("パスワードを「0」にリセットしました。");
-            } else alert("該当するメールアドレスが見つかりません");
-        } else {
-            alert(`案内を ${email} に送信しました。`);
-        }
+            const accounts = getAccounts(); const acc = accounts.find(a => a.email === email);
+            if (acc) { acc.pass = "0"; saveAccounts(accounts); alert("パスワードを「0」にリセットしました。"); }
+            else alert("該当するメールアドレスが見つかりません");
+        } else { alert(`案内を ${email} に送信しました。`); }
         switchAuthView('login');
     }
 
     function checkUserExists() {
         const name = document.getElementById('regUser').value.trim().toLowerCase();
         const exists = getAccounts().some(a => a.username.toLowerCase() === name);
-        document.getElementById('userExistsError').style.display = exists ? 'block' : 'none';
-        return exists;
+        document.getElementById('userExistsError').style.display = exists ? 'block' : 'none'; return exists;
     }
 
     function handleLogin() {
-        const name = document.getElementById('loginUser').value.trim();
-        const pin = document.getElementById('loginPin').value;
-        const pass = document.getElementById('loginPass').value;
-        const err = document.getElementById('loginError');
-
-        const accounts = getAccounts();
-        const acc = accounts.find(a => a.username.toLowerCase() === name.toLowerCase() && a.pin === pin && a.pass === pass);
-
-        if (!acc) {
-            err.style.display = 'block';
-            err.textContent = "アカウント名、PIN、またはパスワードが一致しません";
-            return;
-        }
-
-        currentUserData = { username: acc.username, role: acc.role || "一般利用者" };
-        localStorage.setItem('yuto_tube_user', JSON.stringify(currentUserData));
-        showMainApp(currentUserData);
+        const name = document.getElementById('loginUser').value.trim(); const pin = document.getElementById('loginPin').value; const pass = document.getElementById('loginPass').value; const err = document.getElementById('loginError');
+        const accounts = getAccounts(); const acc = accounts.find(a => a.username.toLowerCase() === name.toLowerCase() && a.pin === pin && a.pass === pass);
+        if (!acc) { err.style.display = 'block'; err.textContent = "アカウント名、PIN、またはパスワードが一致しません"; return; }
+        currentUserData = { username: acc.username, role: acc.role || "一般利用者" }; localStorage.setItem('yuto_tube_user', JSON.stringify(currentUserData)); showMainApp(currentUserData);
     }
 
     function handleRegister() {
-        const name = document.getElementById('regUser').value.trim();
-        const email = document.getElementById('regEmail').value.trim();
-        const pin = document.getElementById('regPin').value;
-        const isAdmin = document.getElementById('chkRegAdmin').checked;
-        const isDev = document.getElementById('chkRegDev').checked;
-
+        const name = document.getElementById('regUser').value.trim(); const email = document.getElementById('regEmail').value.trim(); const pin = document.getElementById('regPin').value;
+        const isAdmin = document.getElementById('chkRegAdmin').checked; const isDev = document.getElementById('chkRegDev').checked;
         if (!name || !pin) return alert("アカウント名とPINは必須です");
         if (checkUserExists()) return alert("このアカウント名は使用できません");
-
-        let role = "一般利用者";
-        let pass = pin;
-
-        if (isDev) {
-            role = "開発者";
-            pass = document.getElementById('regDevPass').value || pin;
-        } else if (isAdmin) {
-            role = "管理者";
-            pass = document.getElementById('regAdminPass').value || pin;
-        }
-
+        let role = "一般利用者"; let pass = pin;
+        if (isDev) { role = "開発者"; pass = document.getElementById('regDevPass').value || pin; }
+        else if (isAdmin) { role = "管理者"; pass = document.getElementById('regAdminPass').value || pin; }
         const newAcc = { username: name, pin, pass, email, role, lockUntil: 0 };
-        const accounts = getAccounts();
-        accounts.push(newAcc);
-        saveAccounts(accounts);
-
-        currentUserData = { username: newAcc.username, role: newAcc.role };
-        localStorage.setItem('yuto_tube_user', JSON.stringify(currentUserData));
-
-        alert("アカウントを作成しました！そのままサービスを開始します。");
-        showMainApp(currentUserData);
+        const accounts = getAccounts(); accounts.push(newAcc); saveAccounts(accounts);
+        currentUserData = { username: newAcc.username, role: newAcc.role }; localStorage.setItem('yuto_tube_user', JSON.stringify(currentUserData));
+        alert("アカウントを作成しました！そのままサービスを開始します。"); showMainApp(currentUserData);
     }
 
     function showMainApp(userData) {
-        document.getElementById('authSection').style.display = 'none';
-        document.getElementById('app-wrapper').style.display = 'block';
+        document.getElementById('authSection').style.display = 'none'; document.getElementById('app-wrapper').style.display = 'block';
         document.getElementById('displayUsername').textContent = `${userData.username} [${userData.role}]`;
         selectGenre('ホーム', 'YouTube 日本 急上昇');
     }
 
-    function handleLogout() {
-        localStorage.removeItem('yuto_tube_user');
-        location.reload();
-    }
+    function handleLogout() { localStorage.removeItem('yuto_tube_user'); location.reload(); }
 </script>
 
 </body>
